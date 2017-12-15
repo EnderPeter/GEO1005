@@ -59,7 +59,7 @@
    <property name="geometry">
     <rect>
      <x>120</x>
-     <y>120</y>
+     <y>100</y>
      <width>188</width>
      <height>41</height>
     </rect>
@@ -79,6 +79,19 @@
    </property>
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QCommandLinkButton" name="commandLinkButton_2">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>180</y>
+     <width>188</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>2test</string>
    </property>
   </widget>
  </widget>
