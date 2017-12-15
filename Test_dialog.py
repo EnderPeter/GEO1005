@@ -39,3 +39,8 @@ class SDSS_terrist_catchDialog(QtGui.QDialog, FORM_CLASS):
         # http://qt-project.org/doc/qt-4.8/designer-using-a-ui-file.html
         # #widgets-and-dialogs-with-auto-connect
         self.setupUi(self)
+
+        #self.box.clicked.connect(me1)
+
+        #def me1():
+            #print 1+1
