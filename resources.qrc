@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/SDSS_terrist_catch" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
