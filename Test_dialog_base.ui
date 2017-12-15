@@ -72,7 +72,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>240</y>
+     <y>180</y>
      <width>156</width>
      <height>23</height>
     </rect>
@@ -84,8 +84,8 @@
   <widget class="QCommandLinkButton" name="commandLinkButton_2">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>170</y>
+     <x>50</x>
+     <y>230</y>
      <width>188</width>
      <height>41</height>
     </rect>
@@ -105,6 +105,19 @@
    </property>
    <property name="text">
     <string>CheckBox</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>100</y>
+     <width>75</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PushButton</string>
    </property>
   </widget>
  </widget>
