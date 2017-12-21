@@ -8,8 +8,8 @@
 
 """
 
-__author__ = 'meylinnh52@gmail.com'
-__date__ = '2017-12-13'
+__author__ = 'meylinh52@gmail.com'
+__date__ = '2017-12-20'
 __copyright__ = 'Copyright 2017, TUDelft'
 
 import unittest
@@ -18,7 +18,7 @@ from PyQt4.QtGui import QIcon
 
 
 
-class SDSS_terrist_catchDialogTest(unittest.TestCase):
+class PRS_PoliceResponseSystemDialogTest(unittest.TestCase):
     """Test rerources work."""
 
     def setUp(self):
@@ -31,12 +31,12 @@ class SDSS_terrist_catchDialogTest(unittest.TestCase):
 
     def test_icon_png(self):
         """Test we can click OK."""
-        path = ':/plugins/SDSS_terrist_catch/icon.png'
+        path = ':/plugins/PRS_PoliceResponseSystem/icon.png'
         icon = QIcon(path)
         self.assertFalse(icon.isNull())
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(SDSS_terrist_catchResourcesTest)
+    suite = unittest.makeSuite(PRS_PoliceResponseSystemResourcesTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
 

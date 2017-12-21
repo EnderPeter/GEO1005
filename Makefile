@@ -1,12 +1,12 @@
 #/***************************************************************************
-# SDSS_terrist_catch
+# PRS_PoliceResponseSystem
 #
-# Catching Criminals
+# Support decision of police officicers when catching a terrorist
 #							 -------------------
-#		begin				: 2017-12-13
+#		begin				: 2017-12-20
 #		git sha				: $Format:%H$
 #		copyright			: (C) 2017 by TUDelft
-#		email				: meylinnh52@gmail.com
+#		email				: meylinh52@gmail.com
 # ***************************************************************************/
 #
 #/***************************************************************************
@@ -38,15 +38,15 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	Test.py Test_dialog.py
+	PRS.py PRS_dialog.py
 
-PLUGINNAME = SDSS_terrist_catch
+PLUGINNAME = PRS_PoliceResponseSystem
 
 PY_FILES = \
 	__init__.py \
-	Test.py Test_dialog.py
+	PRS.py PRS_dialog.py
 
-UI_FILES = Test_dialog_base.ui
+UI_FILES = PRS_dialog_base.ui
 
 EXTRAS = metadata.txt icon.png
 

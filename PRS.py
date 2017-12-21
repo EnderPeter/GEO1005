@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- SDSS_terrist_catch
+ PRS_PoliceResponseSystem
                                  A QGIS plugin
- Catching Criminals
+ Support decision of police officicers when catching a terrorist
                               -------------------
-        begin                : 2017-12-13
+        begin                : 2017-12-20
         git sha              : $Format:%H$
         copyright            : (C) 2017 by TUDelft
-        email                : meylinnh52@gmail.com
+        email                : meylinh52@gmail.com
  ***************************************************************************/
 
 /***************************************************************************
@@ -25,11 +25,11 @@ from PyQt4.QtGui import QAction, QIcon
 # Initialize Qt resources from file resources.py
 import resources
 # Import the code for the dialog
-from Test_dialog import SDSS_terrist_catchDialog
+from PRS_dialog import PRS_PoliceResponseSystemDialog
 import os.path
 
-#test comment
-class SDSS_terrist_catch:
+
+class PRS_PoliceResponseSystem:
     """QGIS Plugin Implementation."""
 
     def __init__(self, iface):
@@ -49,7 +49,7 @@ class SDSS_terrist_catch:
         locale_path = os.path.join(
             self.plugin_dir,
             'i18n',
-            'SDSS_terrist_catch_{}.qm'.format(locale))
+            'PRS_PoliceResponseSystem_{}.qm'.format(locale))
 
         if os.path.exists(locale_path):
             self.translator = QTranslator()
@@ -61,10 +61,10 @@ class SDSS_terrist_catch:
 
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&SDSS_terrist_catch')
+        self.menu = self.tr(u'&PRS')
         # TODO: We are going to let the user set this up in a future iteration
-        self.toolbar = self.iface.addToolBar(u'SDSS_terrist_catch')
-        self.toolbar.setObjectName(u'SDSS_terrist_catch')
+        self.toolbar = self.iface.addToolBar(u'PRS_PoliceResponseSystem')
+        self.toolbar.setObjectName(u'PRS_PoliceResponseSystem')
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -79,7 +79,7 @@ class SDSS_terrist_catch:
         :rtype: QString
         """
         # noinspection PyTypeChecker,PyArgumentList,PyCallByClass
-        return QCoreApplication.translate('SDSS_terrist_catch', message)
+        return QCoreApplication.translate('PRS_PoliceResponseSystem', message)
 
 
     def add_action(
@@ -133,7 +133,7 @@ class SDSS_terrist_catch:
         """
 
         # Create the dialog (after translation) and keep reference
-        self.dlg = SDSS_terrist_catchDialog()
+        self.dlg = PRS_PoliceResponseSystemDialog()
 
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
@@ -161,10 +161,10 @@ class SDSS_terrist_catch:
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
-        icon_path = ':/plugins/SDSS_terrist_catch/icon.png'
+        icon_path = ':/plugins/PRS_PoliceResponseSystem/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'test'),
+            text=self.tr(u'Police Response Sytem'),
             callback=self.run,
             parent=self.iface.mainWindow())
 
@@ -173,7 +173,7 @@ class SDSS_terrist_catch:
         """Removes the plugin menu item and icon from QGIS GUI."""
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&SDSS_terrist_catch'),
+                self.tr(u'&PRS'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar

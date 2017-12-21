@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/SDSS_terrist_catch" >
+    <qresource prefix="/plugins/PRS_PoliceResponseSystem" >
         <file>icon.png</file>
     </qresource>
 </RCC>

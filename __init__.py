@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- SDSS_terrist_catch
+ PRS_PoliceResponseSystem
                                  A QGIS plugin
- Catching Criminals
+ Support decision of police officicers when catching a terrorist
                              -------------------
-        begin                : 2017-12-13
+        begin                : 2017-12-20
         copyright            : (C) 2017 by TUDelft
-        email                : meylinnh52@gmail.com
+        email                : meylinh52@gmail.com
         git sha              : $Format:%H$
  ***************************************************************************/
 
@@ -25,11 +25,11 @@
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
-    """Load SDSS_terrist_catch class from file SDSS_terrist_catch.
+    """Load PRS_PoliceResponseSystem class from file PRS_PoliceResponseSystem.
 
     :param iface: A QGIS interface instance.
     :type iface: QgsInterface
     """
     #
-    from .Test import SDSS_terrist_catch
-    return SDSS_terrist_catch(iface)
+    from .PRS import PRS_PoliceResponseSystem
+    return PRS_PoliceResponseSystem(iface)

@@ -8,26 +8,26 @@
 
 """
 
-__author__ = 'meylinnh52@gmail.com'
-__date__ = '2017-12-13'
+__author__ = 'meylinh52@gmail.com'
+__date__ = '2017-12-20'
 __copyright__ = 'Copyright 2017, TUDelft'
 
 import unittest
 
 from PyQt4.QtGui import QDialogButtonBox, QDialog
 
-from Test_dialog import SDSS_terrist_catchDialog
+from PRS_dialog import PRS_PoliceResponseSystemDialog
 
 from utilities import get_qgis_app
 QGIS_APP = get_qgis_app()
 
 
-class SDSS_terrist_catchDialogTest(unittest.TestCase):
+class PRS_PoliceResponseSystemDialogTest(unittest.TestCase):
     """Test dialog works."""
 
     def setUp(self):
         """Runs before each test."""
-        self.dialog = SDSS_terrist_catchDialog(None)
+        self.dialog = PRS_PoliceResponseSystemDialog(None)
 
     def tearDown(self):
         """Runs after each test."""
@@ -49,7 +49,7 @@ class SDSS_terrist_catchDialogTest(unittest.TestCase):
         self.assertEqual(result, QDialog.Rejected)
 
 if __name__ == "__main__":
-    suite = unittest.makeSuite(SDSS_terrist_catchDialogTest)
+    suite = unittest.makeSuite(PRS_PoliceResponseSystemDialogTest)
     runner = unittest.TextTestRunner(verbosity=2)
     runner.run(suite)
 

@@ -1,7 +1,7 @@
 Plugin Builder Results
 
-Your plugin SDSS_terrist_catch was created in:
-    D:\GEOMATIC MASTER\2QUARTER\GEO1005-SDSS\Plugins_Test\SDSS_Test\SDSS_terrist_catch
+Your plugin PRS_PoliceResponseSystem was created in:
+    D:\GEOMATIC MASTER\2QUARTER\GEO1005-SDSS\Plugins_Test\SDSS_Test\PRS_PoliceResponseSystem
 
 Your QGIS plugin directory is located at:
     C:/Users/lucas/.qgis2/python/plugins
@@ -17,11 +17,11 @@ What's Next:
 
   * Test the plugin by enabling it in the QGIS plugin manager
 
-  * Customize it by editing the implementation file: ``Test.py``
+  * Customize it by editing the implementation file: ``PRS.py``
 
   * Create your own custom icon, replacing the default icon.png
 
-  * Modify your user interface by opening SDSS_terrist_catch.ui in Qt Designer
+  * Modify your user interface by opening PRS_PoliceResponseSystem.ui in Qt Designer
 
   * You can use the Makefile to compile your Ui and resource files when
     you make changes. This requires GNU make (gmake)
