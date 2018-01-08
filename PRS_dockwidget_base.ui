@@ -14,28 +14,43 @@
    <string>PRS_PoliceResponseSystem</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <widget class="QWidget" name="verticalLayoutWidget">
+   <widget class="QPushButton" name="openScenario">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>331</width>
-      <height>161</height>
+      <x>0</x>
+      <y>10</y>
+      <width>111</width>
+      <height>23</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout"/>
+    <property name="text">
+     <string>Open Scenario</string>
+    </property>
    </widget>
-   <widget class="QPushButton" name="zoomArea">
+   <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>30</x>
-      <y>210</y>
+      <x>120</x>
+      <y>40</y>
       <width>75</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>ZoomArea</string>
+     <string>Incident A</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>40</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Incident</string>
     </property>
    </widget>
   </widget>

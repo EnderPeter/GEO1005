@@ -58,10 +58,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # set up GUI operation signals
         # data
         #zoom_area
-        self.zoomArea.clicked.connect(self.zoom)
-
-
-
+        self.openScenario.clicked.connect(self.zoom)
 
 
     def closeEvent(self, event):
