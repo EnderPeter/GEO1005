@@ -3,10 +3,10 @@
 /***************************************************************************
  PRS_PoliceResponseSystem
                                  A QGIS plugin
- Support decision of police officicers when catching a terrorist
+ Support decisions of police officers in catching terrorist attackers at the least possible cost.
                              -------------------
-        begin                : 2017-12-20
-        copyright            : (C) 2017 by TUDelft
+        begin                : 2018-01-04
+        copyright            : (C) 2018 by TUDelft
         email                : meylinh52@gmail.com
         git sha              : $Format:%H$
  ***************************************************************************/

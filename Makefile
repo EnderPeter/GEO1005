@@ -1,11 +1,11 @@
 #/***************************************************************************
 # PRS_PoliceResponseSystem
 #
-# Support decision of police officicers when catching a terrorist
+# Support decisions of police officers in catching terrorist attackers at the least possible cost.
 #							 -------------------
-#		begin				: 2017-12-20
+#		begin				: 2018-01-04
 #		git sha				: $Format:%H$
-#		copyright			: (C) 2017 by TUDelft
+#		copyright			: (C) 2018 by TUDelft
 #		email				: meylinh52@gmail.com
 # ***************************************************************************/
 #
@@ -38,15 +38,15 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	PRS.py PRS_dialog.py
+	PRS.py PRS_dockwidget.py
 
 PLUGINNAME = PRS_PoliceResponseSystem
 
 PY_FILES = \
 	__init__.py \
-	PRS.py PRS_dialog.py
+	PRS.py PRS_dockwidget.py
 
-UI_FILES = PRS_dialog_base.ui
+UI_FILES = PRS_dockwidget_base.ui
 
 EXTRAS = metadata.txt icon.png
 

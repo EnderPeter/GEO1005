@@ -7,17 +7,17 @@
 # This file should be included when you package your plugin.# Mandatory items:
 
 [general]
-name=PRS
+name=PRS_PoliceResponseSystem
 qgisMinimumVersion=2.0
-description=Support decision of police officicers when catching a terrorist
+description=Support decisions of police officers in catching terrorist attackers at the least possible cost.
 version=0.1
 author=TUDelft
 email=meylinh52@gmail.com
 
-about=PRS
+about=PRS (Police Response System) is a Plugin developed for the course GEO1005 Spatial Decision Support Systems (SDSS) for Planning and Crisis Management at Delft University of Technology. The plugin will be able to support decisions of police officers in catching terrorist attackers at the least possible cost. Herrera M. Micha I. Wang X.
 
-tracker=https://github.com/EnderPeter/GEO1005_2017_Group1/wiki
-repository=https://github.com/EnderPeter/GEO1005_2017_Group1/wiki
+tracker=BugTracker
+repository=https://github.com/EnderPeter/GEO1005_2017_Group1
 # End of mandatory metadata
 
 # Recommended items:
@@ -28,11 +28,11 @@ repository=https://github.com/EnderPeter/GEO1005_2017_Group1/wiki
 # Tags are comma separated with spaces allowed
 tags=
 
-homepage=https://github.com/EnderPeter/GEO1005_2017_Group1/wiki
+homepage=
 category=Plugins
 icon=icon.png
 # experimental flag
-experimental=False
+experimental=True
 
 # deprecated flag (applies to the whole plugin, not just a single version)
 deprecated=False

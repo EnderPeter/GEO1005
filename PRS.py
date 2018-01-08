@@ -3,11 +3,11 @@
 /***************************************************************************
  PRS_PoliceResponseSystem
                                  A QGIS plugin
- Support decision of police officicers when catching a terrorist
+ Support decisions of police officers in catching terrorist attackers at the least possible cost.
                               -------------------
-        begin                : 2017-12-20
+        begin                : 2018-01-04
         git sha              : $Format:%H$
-        copyright            : (C) 2017 by TUDelft
+        copyright            : (C) 2018 by TUDelft
         email                : meylinh52@gmail.com
  ***************************************************************************/
 
@@ -20,12 +20,16 @@
  *                                                                         *
  ***************************************************************************/
 """
-from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication
+from PyQt4.QtCore import QSettings, QTranslator, qVersion, QCoreApplication, Qt
 from PyQt4.QtGui import QAction, QIcon
 # Initialize Qt resources from file resources.py
+from osgeo import gdal
+from qgis._core import QgsMapLayerRegistry, QgsDataSourceURI, QgsRectangle, QgsVectorLayer
+
 import resources
-# Import the code for the dialog
-from PRS_dialog import PRS_PoliceResponseSystemDialog
+
+# Import the code for the DockWidget
+from PRS_dockwidget import PRS_PoliceResponseSystemDockWidget
 import os.path
 
 
@@ -42,8 +46,10 @@ class PRS_PoliceResponseSystem:
         """
         # Save reference to the QGIS interface
         self.iface = iface
+
         # initialize plugin directory
         self.plugin_dir = os.path.dirname(__file__)
+
         # initialize locale
         locale = QSettings().value('locale/userLocale')[0:2]
         locale_path = os.path.join(
@@ -58,13 +64,18 @@ class PRS_PoliceResponseSystem:
             if qVersion() > '4.3.3':
                 QCoreApplication.installTranslator(self.translator)
 
-
         # Declare instance attributes
         self.actions = []
-        self.menu = self.tr(u'&PRS')
+        self.menu = self.tr(u'&PRS_PoliceResponseSystem')
         # TODO: We are going to let the user set this up in a future iteration
         self.toolbar = self.iface.addToolBar(u'PRS_PoliceResponseSystem')
         self.toolbar.setObjectName(u'PRS_PoliceResponseSystem')
+
+        #print "** INITIALIZING PRS_PoliceResponseSystem"
+
+        self.pluginIsActive = False
+        self.dockwidget = None
+
 
     # noinspection PyMethodMayBeStatic
     def tr(self, message):
@@ -132,9 +143,6 @@ class PRS_PoliceResponseSystem:
         :rtype: QAction
         """
 
-        # Create the dialog (after translation) and keep reference
-        self.dlg = PRS_PoliceResponseSystemDialog()
-
         icon = QIcon(icon_path)
         action = QAction(icon, text, parent)
         action.triggered.connect(callback)
@@ -158,36 +166,108 @@ class PRS_PoliceResponseSystem:
 
         return action
 
+
     def initGui(self):
         """Create the menu entries and toolbar icons inside the QGIS GUI."""
 
         icon_path = ':/plugins/PRS_PoliceResponseSystem/icon.png'
         self.add_action(
             icon_path,
-            text=self.tr(u'Police Response Sytem'),
+            text=self.tr(u'PRS'),
             callback=self.run,
             parent=self.iface.mainWindow())
+
+    #--------------------------------------------------------------------------
+
+    def onClosePlugin(self):
+        """Cleanup necessary items here when plugin dockwidget is closed"""
+
+        #print "** CLOSING PRS_PoliceResponseSystem"
+
+        # disconnects
+        self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
+
+        # remove this statement if dockwidget is to remain
+        # for reuse if plugin is reopened
+        # Commented next statement since it causes QGIS crashe
+        # when closing the docked window:
+        # self.dockwidget = None
+
+        self.pluginIsActive = False
 
 
     def unload(self):
         """Removes the plugin menu item and icon from QGIS GUI."""
+
+        #print "** UNLOAD PRS_PoliceResponseSystem"
+
         for action in self.actions:
             self.iface.removePluginMenu(
-                self.tr(u'&PRS'),
+                self.tr(u'&PRS_PoliceResponseSystem'),
                 action)
             self.iface.removeToolBarIcon(action)
         # remove the toolbar
         del self.toolbar
 
+    #--------------------------------------------------------------------------
 
     def run(self):
-        """Run method that performs all the real work"""
-        # show the dialog
-        self.dlg.show()
-        # Run the dialog event loop
-        result = self.dlg.exec_()
-        # See if OK was pressed
-        if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+        """Run method that loads and starts the plugin"""
+
+        if not self.pluginIsActive:
+            self.pluginIsActive = True
+
+            #print "** STARTING PRS_PoliceResponseSystem"
+
+            # dockwidget may not exist if:
+            #    first run of plugin
+            #    removed on close (see self.onClosePlugin method)
+            if self.dockwidget == None:
+                # Create the dockwidget (after translation) and keep reference
+                self.dockwidget = PRS_PoliceResponseSystemDockWidget()
+
+            # connect to provide cleanup on closing of dockwidget
+            self.dockwidget.closingPlugin.connect(self.onClosePlugin)
+
+            # show the dockwidget
+            # TODO: fix to allow choice of dock location
+            self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockwidget)
+
+            cur_dir = os.path.dirname(os.path.realpath(__file__))
+            filename = os.path.join(cur_dir, "data", "vfn", "osm.xml")
+            gdal.FileFromMemBuffer(filename, "xml")
+            # rasterLyr = QgsRasterLayer(filename, "OSM")
+            rasterLyr = self.iface.addRasterLayer(filename, "OSM")
+            QgsMapLayerRegistry.instance().addMapLayers([rasterLyr])
+            # self.canvas.setExtent(rasterLyr.extent())
+            # self.canvas.setLayerSet([QgsMapCanvasLayer(rasterLyr)])
+
+            load_layer_from_db("Study_area", "study_area.qml")
+            load_layer_from_db("Buffer_A", "buffer_a.qml")
+            load_layer_from_db("Incident_A", "incident_a.qml")
+            load_layer_from_db("Buffer_B", "buffer_b.qml")
+            load_layer_from_db("Incident_B", "incident_b.qml")
+            load_layer_from_db("info_A", "info_A.qml")
+            zoom(self)
+            self.dockwidget.show()
+
+
+            self.dockwidget.show()
+
+def zoom(self):
+    self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
+    #self.iface.mapCanvas().refresh()
+
+
+def load_layer_from_db(layer_name,style_name):
+    uri = QgsDataSourceURI()
+    cur_dir = os.path.dirname(os.path.realpath(__file__))
+    filename = os.path.join(cur_dir, "data", "db.sqlite")
+    filename_styles = os.path.join(cur_dir, "data", "styles",style_name)
+    uri.setDatabase(filename)
+    uri.setDataSource('', layer_name, 'GEOMETRY', )
+    sta = QgsVectorLayer(uri.uri(), layer_name, "spatialite")
+    sta.loadNamedStyle(filename_styles)
+        # set the transparency of a layer
+        # sta.setLayerTransparency(89)
+    QgsMapLayerRegistry.instance().addMapLayers([sta])

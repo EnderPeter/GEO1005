@@ -1,7 +1,7 @@
 Plugin Builder Results
 
 Your plugin PRS_PoliceResponseSystem was created in:
-    D:\GEOMATIC MASTER\2QUARTER\GEO1005-SDSS\Plugins_Test\SDSS_Test\PRS_PoliceResponseSystem
+    D:\GEOMATIC MASTER\2QUARTER\GEO1005-SDSS\Plugins_Test\SDSS\PRS_PoliceResponseSystem
 
 Your QGIS plugin directory is located at:
     C:/Users/lucas/.qgis2/python/plugins
