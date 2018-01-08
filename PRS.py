@@ -183,7 +183,7 @@ class PRS_PoliceResponseSystem:
         """Cleanup necessary items here when plugin dockwidget is closed"""
 
         #print "** CLOSING PRS_PoliceResponseSystem"
-
+        QgsMapLayerRegistry.instance().removeAllMapLayers()
         # disconnects
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
 
@@ -236,38 +236,6 @@ class PRS_PoliceResponseSystem:
             cur_dir = os.path.dirname(os.path.realpath(__file__))
             filename = os.path.join(cur_dir, "data", "vfn", "osm.xml")
             gdal.FileFromMemBuffer(filename, "xml")
-            # rasterLyr = QgsRasterLayer(filename, "OSM")
             rasterLyr = self.iface.addRasterLayer(filename, "OSM")
             QgsMapLayerRegistry.instance().addMapLayers([rasterLyr])
-            # self.canvas.setExtent(rasterLyr.extent())
-            # self.canvas.setLayerSet([QgsMapCanvasLayer(rasterLyr)])
-
-            load_layer_from_db("Study_area", "study_area.qml")
-            load_layer_from_db("Buffer_A", "buffer_a.qml")
-            load_layer_from_db("Incident_A", "incident_a.qml")
-            load_layer_from_db("Buffer_B", "buffer_b.qml")
-            load_layer_from_db("Incident_B", "incident_b.qml")
-            load_layer_from_db("info_A", "info_A.qml")
-            zoom(self)
             self.dockwidget.show()
-
-
-            self.dockwidget.show()
-
-def zoom(self):
-    self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
-    #self.iface.mapCanvas().refresh()
-
-
-def load_layer_from_db(layer_name,style_name):
-    uri = QgsDataSourceURI()
-    cur_dir = os.path.dirname(os.path.realpath(__file__))
-    filename = os.path.join(cur_dir, "data", "db.sqlite")
-    filename_styles = os.path.join(cur_dir, "data", "styles",style_name)
-    uri.setDatabase(filename)
-    uri.setDataSource('', layer_name, 'GEOMETRY', )
-    sta = QgsVectorLayer(uri.uri(), layer_name, "spatialite")
-    sta.loadNamedStyle(filename_styles)
-        # set the transparency of a layer
-        # sta.setLayerTransparency(89)
-    QgsMapLayerRegistry.instance().addMapLayers([sta])
