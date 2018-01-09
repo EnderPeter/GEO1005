@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>343</width>
-    <height>503</height>
+    <width>361</width>
+    <height>535</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -40,29 +40,10 @@
      <string>Incident B</string>
     </property>
    </widget>
-   <widget class="QWidget" name="verticalLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>30</y>
-      <width>371</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QPushButton" name="openScenario">
-       <property name="text">
-        <string>Open Scenario</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
    <widget class="QLabel" name="selectLayerLabel">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>60</y>
       <width>99</width>
       <height>39</height>
@@ -70,6 +51,45 @@
     </property>
     <property name="text">
      <string>Select Incident:</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bufferButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>120</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Buffer</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="bufferCutoffEdit">
+    <property name="geometry">
+     <rect>
+      <x>90</x>
+      <y>120</y>
+      <width>133</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>800</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="openScenario">
+    <property name="geometry">
+     <rect>
+      <x>-10</x>
+      <y>10</y>
+      <width>369</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Open Scenario</string>
     </property>
    </widget>
   </widget>
