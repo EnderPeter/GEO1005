@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>391</width>
+    <width>369</width>
     <height>534</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>371</width>
+      <width>361</width>
       <height>31</height>
      </rect>
     </property>
@@ -38,24 +38,20 @@
      <rect>
       <x>0</x>
       <y>40</y>
-      <width>371</width>
+      <width>361</width>
       <height>27</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
-      <widget class="QPushButton" name="incident_a">
+      <widget class="QLabel" name="label">
        <property name="text">
-        <string>Incident A</string>
+        <string>Select Incident:</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="incident_b">
-       <property name="text">
-        <string>Incident B</string>
-       </property>
-      </widget>
+      <widget class="QComboBox" name="comboIncident"/>
      </item>
     </layout>
    </widget>
@@ -64,8 +60,8 @@
      <rect>
       <x>0</x>
       <y>80</y>
-      <width>371</width>
-      <height>701</height>
+      <width>361</width>
+      <height>681</height>
      </rect>
     </property>
     <property name="currentIndex">
@@ -126,7 +122,7 @@
        <rect>
         <x>0</x>
         <y>80</y>
-        <width>361</width>
+        <width>351</width>
         <height>28</height>
        </rect>
       </property>
@@ -152,7 +148,7 @@
        <rect>
         <x>170</x>
         <y>120</y>
-        <width>191</width>
+        <width>181</width>
         <height>22</height>
        </rect>
       </property>
@@ -162,7 +158,7 @@
        <rect>
         <x>0</x>
         <y>160</y>
-        <width>361</width>
+        <width>351</width>
         <height>28</height>
        </rect>
       </property>
@@ -175,7 +171,7 @@
        <rect>
         <x>0</x>
         <y>220</y>
-        <width>671</width>
+        <width>351</width>
         <height>181</height>
        </rect>
       </property>
@@ -267,7 +263,7 @@
        <rect>
         <x>90</x>
         <y>40</y>
-        <width>191</width>
+        <width>171</width>
         <height>22</height>
        </rect>
       </property>
@@ -288,7 +284,7 @@
      <widget class="QPushButton" name="buffer_zone">
       <property name="geometry">
        <rect>
-        <x>290</x>
+        <x>270</x>
         <y>40</y>
         <width>71</width>
         <height>23</height>

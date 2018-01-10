@@ -44,6 +44,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     closingPlugin = pyqtSignal()
     layer_dic=dict()
+    selected_Incident = "-"
     selected_layer="Incident_A"
 
 
@@ -69,10 +70,12 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # data
         self.openScenario.clicked.connect(self.zoom)
-        self.incident_a.clicked.connect(self.removeMapLayersB)
-        self.incident_b.clicked.connect(self.removeMapLayersA)
+        #self.incident_a.clicked.connect(self.removeMapLayersB)
+        #self.incident_b.clicked.connect(self.removeMapLayersA)
         self.selectLayerCombo.activated.connect(self.setSelectedLayer)
-
+        self.comboIncident.activated.connect(self.setIncident)
+        self.comboIncident.activated.connect(self.removeMapLayersB)
+        #self.comboIncident.activated.connect(self.removeMapLayersA)
         #analysis
         #self.setNetworkButton.clicked.connect(self.buildNetwork)
         self.buffer_zone.clicked.connect(self.calculateBuffer)
@@ -101,6 +104,12 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.selectLayerCombo.addItem("Incident_A")
         self.selectLayerCombo.addItem("Incident_B")
 
+        #Add Items to ComboboxIncident
+        self.comboIncident.clear()
+        self.comboIncident.addItem("-")
+        self.comboIncident.addItem("Incident_A")
+        self.comboIncident.addItem("Incident_B")
+
 
     def load_layer_from_db(self, layer_name,style_name):
         uri = QgsDataSourceURI()
@@ -116,18 +125,40 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.layer_dic[layer_name]=sta
         QgsMapLayerRegistry.instance().addMapLayers([sta])
 
+
+
     def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-            #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
-            if not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
-                self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
+
+    #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
+            if   self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
+                 self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
             else:
-                self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
-    def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-        #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_B").id())
-        if  not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
-            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
-        else:
-            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
+                 self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
+
+
+    # def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
+    #     #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_B").id())
+    #     if  self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
+    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
+    #     else:
+    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
+    #
+
+
+
+    # def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
+    #         #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
+    #         if not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
+    #             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
+    #         else:
+    #             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
+
+    # def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
+    #     #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_B").id())
+    #     if  not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
+    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
+    #     else:
+    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
 
         # Incident_Blocked_Area
 
@@ -150,9 +181,15 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     #         self.selectAttributeCombo.clear()
     #         self.clearChart()
     #
+
+    def setIncident(self):
+        layer_name = self.comboIncident.currentText()
+        self.selected_layer = layer_name
+
     def setSelectedLayer(self):
         layer_name = self.selectLayerCombo.currentText()
         self.selected_layer=layer_name
+
 
     # def getSelectedLayer(self):
     #     layer_name = self.selectLayerCombo.currentText()
