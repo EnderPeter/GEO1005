@@ -45,7 +45,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     closingPlugin = pyqtSignal()
     layer_dic=dict()
     selected_Incident = "-"
-    selected_layer="Incident_A"
+    #selected_layer="Incident_A"
 
 
     def __init__(self, parent=None):
@@ -67,12 +67,11 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.canvas.setCanvasColor(Qt.white)
         self.canvas.show()
 
-
         # data
         self.openScenario.clicked.connect(self.zoom)
         #self.incident_a.clicked.connect(self.removeMapLayersB)
         #self.incident_b.clicked.connect(self.removeMapLayersA)
-        self.selectLayerCombo.activated.connect(self.setSelectedLayer)
+        #self.selectLayerCombo.activated.connect(self.setSelectedLayer)
         self.comboIncident.activated.connect(self.setIncident)
         self.comboIncident.activated.connect(self.removeMapLayersB)
         #self.comboIncident.activated.connect(self.removeMapLayersA)
@@ -80,11 +79,13 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #self.setNetworkButton.clicked.connect(self.buildNetwork)
         self.buffer_zone.clicked.connect(self.calculateBuffer)
         #self.shortestRouteButton.clicked.connect(self.calculateRoute)
+        #
+        # # #remove layers
+        # self.clean_buffer.clicked.connect(self.cleanBuffer)
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
         event.accept()
-
 
     def zoom(self):
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
@@ -99,10 +100,10 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.load_layer_from_db("Incident_A", "incident_a.qml")
         self.load_layer_from_db("Incident_B", "incident_b.qml")
 
-        #Add Items to Combobox
-        self.selectLayerCombo.clear()
-        self.selectLayerCombo.addItem("Incident_A")
-        self.selectLayerCombo.addItem("Incident_B")
+        # #Add Items to Combobox
+        # self.selectLayerCombo.clear()
+        # self.selectLayerCombo.addItem("Incident_A")
+        # self.selectLayerCombo.addItem("Incident_B")
 
         #Add Items to ComboboxIncident
         self.comboIncident.clear()
@@ -126,7 +127,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         QgsMapLayerRegistry.instance().addMapLayers([sta])
 
 
-
     def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
 
     #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
@@ -144,8 +144,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
     #
 
-
-
     # def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
     #         #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
     #         if not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
@@ -161,6 +159,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
 
         # Incident_Blocked_Area
+
 
 
     # after adding features to layers needs a refresh (sometimes)
@@ -186,9 +185,9 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
 
-    def setSelectedLayer(self):
-        layer_name = self.selectLayerCombo.currentText()
-        self.selected_layer=layer_name
+    # def setSelectedLayer(self):
+    #     layer_name = self.selectLayerCombo.currentText()
+    #     self.selected_layer=layer_name
 
 
     # def getSelectedLayer(self):
@@ -261,3 +260,13 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 values.append([buffer[0],cutoff_distance])
             uf.insertTempFeatures(buffer_layer, geoms, values)
             self.refreshCanvas(buffer_layer)
+
+    # def cleanBuffer(self):
+    #
+    #     #QgsMapLayerRegistry.instance().removeMapLayer("Buffers")
+    #      QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("buffer_layer").id())
+
+
+
+
+

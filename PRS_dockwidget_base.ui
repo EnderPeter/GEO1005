@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
+    <width>385</width>
     <height>617</height>
    </rect>
   </property>
@@ -253,19 +253,6 @@
        <string>Meters</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton">
-      <property name="geometry">
-       <rect>
-        <x>300</x>
-        <y>10</y>
-        <width>41</width>
-        <height>23</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Clean</string>
-      </property>
-     </widget>
      <widget class="QPushButton" name="pushButton_2">
       <property name="geometry">
        <rect>
@@ -277,6 +264,19 @@
       </property>
       <property name="text">
        <string>Intersection</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="clean_buffer">
+      <property name="geometry">
+       <rect>
+        <x>300</x>
+        <y>10</y>
+        <width>51</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Clean</string>
       </property>
      </widget>
     </widget>
