@@ -22,13 +22,19 @@
 """
 
 import os
+from numpy import random
+from qgis.core import *
 from PyQt4 import QtGui, QtCore, uic
 from PyQt4.QtCore import pyqtSignal, Qt, QVariant
+from PyQt4.QtGui import QColor
 from Qt import QtCore
-from qgis._core import QgsRectangle
+from qgis._core import QgsRectangle, QgsProject
+from qgis._networkanalysis import QgsLineVectorLayerDirector, QgsDistanceArcProperter, QgsGraphBuilder, QgsGraphAnalyzer
 from qgis.utils import iface
 from qgis._core import QgsMapLayerRegistry, QgsDataSourceURI, QgsRectangle, QgsVectorLayer
+import processing
 from . import utility_functions as uf
+
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'PRS_dockwidget_base.ui'))
@@ -38,6 +44,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     closingPlugin = pyqtSignal()
     layer_dic=dict()
+    selected_layer="Incident_A"
 
 
     def __init__(self, parent=None):
@@ -59,13 +66,17 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.canvas.setCanvasColor(Qt.white)
         self.canvas.show()
 
-        # set up GUI operation signals
+
         # data
-        #zoom_area
         self.openScenario.clicked.connect(self.zoom)
         self.incident_a.clicked.connect(self.removeMapLayersB)
         self.incident_b.clicked.connect(self.removeMapLayersA)
-        self.bufferButton.clicked.connect(self.calculateBuffer)
+        self.selectLayerCombo.activated.connect(self.setSelectedLayer)
+
+        #analysis
+        #self.setNetworkButton.clicked.connect(self.buildNetwork)
+        self.buffer_zone.clicked.connect(self.calculateBuffer)
+        #self.shortestRouteButton.clicked.connect(self.calculateRoute)
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
@@ -80,10 +91,15 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.load_layer_from_db("RoadNetwork", "road_network.qml")
         self.load_layer_from_db("Police_stations_area", "police_station.qml")
         self.load_layer_from_db("Buffer_A", "buffer_a.qml")
-        self.load_layer_from_db("Incident_A", "incident_a.qml")
         self.load_layer_from_db("Buffer_B", "buffer_b.qml")
-        self.load_layer_from_db("Incident_B", "incident_b.qml")
         self.load_layer_from_db("info_A", "info_A.qml")
+        self.load_layer_from_db("Incident_A", "incident_a.qml")
+        self.load_layer_from_db("Incident_B", "incident_b.qml")
+
+        #Add Items to Combobox
+        self.selectLayerCombo.clear()
+        self.selectLayerCombo.addItem("Incident_A")
+        self.selectLayerCombo.addItem("Incident_B")
 
 
     def load_layer_from_db(self, layer_name,style_name):
@@ -100,21 +116,20 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.layer_dic[layer_name]=sta
         QgsMapLayerRegistry.instance().addMapLayers([sta])
 
-    def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-            #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
-            if self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
-                self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
-            else:
-                self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
     def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
+            #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
+            if not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
+                self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
+            else:
+                self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
+    def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
         #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_B").id())
-        if  self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
-            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
-        else:
+        if  not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
+        else:
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
 
         # Incident_Blocked_Area
-
 
 
     # after adding features to layers needs a refresh (sometimes)
@@ -123,14 +138,37 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             layer.setCacheImage(None)
         else:
             self.canvas.refresh()
+    #
+    # def updateLayers(self):
+    #     layers = uf.getLegendLayers(self.iface, 'all', 'all')
+    #     self.selectLayerCombo.clear()
+    #     if layers:
+    #         layer_names = uf.getLayersListNames(layers)
+    #         self.selectLayerCombo.addItems(layer_names)
+    #         self.setSelectedLayer()
+    #     else:
+    #         self.selectAttributeCombo.clear()
+    #         self.clearChart()
+    #
+    def setSelectedLayer(self):
+        layer_name = self.selectLayerCombo.currentText()
+        self.selected_layer=layer_name
 
+    # def getSelectedLayer(self):
+    #     layer_name = self.selectLayerCombo.currentText()
+    #     layer = uf.getLegendLayerByName(self.iface,layer_name)
+    #     return layer
 
-    def getSelectedLayer(self):
-        layer_name = "Incident_A"
-        layer = uf.getLegendLayerByName(self.iface, layer_name)
-        print "layer",layer
-        return layer
+    # #
+    # def getSelectedLayer(self):
+    #     layer_name = "Incident_A"
+    #     layer = uf.getLegendLayerByName(self.iface, layer_name)
+    #     print "layer",layer
+    #     return layer
 
+    # def getSelectedAttribute(self):
+    #     field_name = self.selectAttributeCombo.currentText()
+    #     return field_name
 
     # buffer functions
     def getBufferCutoff(self):
@@ -142,8 +180,11 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
 
     def calculateBuffer(self):
-        origins = self.getSelectedLayer().selectedFeatures()
-        layer = self.getSelectedLayer()
+        #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
+        layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
+        origins = layer.getFeatures()
+        #origins = self.getSelectedLayer().selectedFeatures()
+        #layer = self.getSelectedLayer()
         if origins > 0:
             cutoff_distance = self.getBufferCutoff()
             buffers = {}
@@ -160,7 +201,18 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 attribs = ['id', 'distance']
                 types = [QVariant.String, QVariant.Double]
                 buffer_layer = uf.createTempLayer('Buffers','POLYGON',layer.crs().postgisSrid(), attribs, types)
-                uf.loadTempLayer(buffer_layer)
+                buffer_layer.setLayerTransparency(20)
+
+                ###Colorif layer_name ==incien_a use color xx xx
+                symbols = buffer_layer.rendererV2().symbols()
+                symbol = symbols[0]
+                symbol.setColor(QColor.fromRgb(255, 255, 50))
+                ###
+
+                #uf.loadTempLayer(buffer_layer)
+                QgsMapLayerRegistry.instance().addMapLayer(buffer_layer, False)
+                root = QgsProject.instance().layerTreeRoot()
+                root.insertLayer(6, buffer_layer)
                 buffer_layer.setLayerName('Buffers')
             # insert buffer polygons
             geoms = []
