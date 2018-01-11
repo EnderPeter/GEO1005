@@ -132,7 +132,7 @@
        <string> Dangerous Zone</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="bufferButton">
+     <widget class="QPushButton" name="intersection_button">
       <property name="geometry">
        <rect>
         <x>210</x>
@@ -204,7 +204,7 @@
        </rect>
       </property>
      </widget>
-     <widget class="QComboBox" name="selectLayerCombo">
+     <widget class="QComboBox" name="selectZone">
       <property name="geometry">
        <rect>
         <x>90</x>
@@ -253,7 +253,7 @@
        <string>Meters</string>
       </property>
      </widget>
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="shortestPath">
       <property name="geometry">
        <rect>
         <x>10</x>
@@ -263,7 +263,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Intersection</string>
+       <string>Shortest Path</string>
       </property>
      </widget>
      <widget class="QPushButton" name="clean_buffer">
@@ -277,6 +277,19 @@
       </property>
       <property name="text">
        <string>Clean</string>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="show_path_length">
+      <property name="geometry">
+       <rect>
+        <x>90</x>
+        <y>120</y>
+        <width>75</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Path Length</string>
       </property>
      </widget>
     </widget>

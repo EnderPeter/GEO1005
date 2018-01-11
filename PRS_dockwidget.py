@@ -32,9 +32,11 @@ from qgis._core import QgsRectangle, QgsProject
 from qgis._networkanalysis import QgsLineVectorLayerDirector, QgsDistanceArcProperter, QgsGraphBuilder, QgsGraphAnalyzer
 from qgis.utils import iface
 from qgis._core import QgsMapLayerRegistry, QgsDataSourceURI, QgsRectangle, QgsVectorLayer
+from qgis.networkanalysis import *
 import processing
 from . import utility_functions as uf
 
+import random
 
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'PRS_dockwidget_base.ui'))
@@ -42,10 +44,13 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 
 class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
+
     closingPlugin = pyqtSignal()
     layer_dic=dict()
+    danger_zones=[]
     selected_Incident = "-"
     #selected_layer="Incident_A"
+    textDanger= "-"
 
 
     def __init__(self, parent=None):
@@ -73,15 +78,22 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #self.incident_b.clicked.connect(self.removeMapLayersA)
         #self.selectLayerCombo.activated.connect(self.setSelectedLayer)
         self.comboIncident.activated.connect(self.setIncident)
-        self.comboIncident.activated.connect(self.removeMapLayersB)
+        #self.comboIncident.activated.connect(self.removeMapLayersB)
         #self.comboIncident.activated.connect(self.removeMapLayersA)
         #analysis
         #self.setNetworkButton.clicked.connect(self.buildNetwork)
         self.buffer_zone.clicked.connect(self.calculateBuffer)
-        #self.shortestRouteButton.clicked.connect(self.calculateRoute)
-        #
+        self.shortestPath.clicked.connect(self.run_shortest_path)
+        #self.selectZone.activated.connect(self.setZone)
+        self.intersection_button.clicked.connect(self.intersection_block)
+        self.show_path_length.clicked.connect(self.calculate_length)
+
         # # #remove layers
-        # self.clean_buffer.clicked.connect(self.cleanBuffer)
+        self.clean_buffer.clicked.connect(self.cleanBuffer)
+
+        self.graph = QgsGraph()
+        self.tied_points = []
+
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
@@ -99,11 +111,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.load_layer_from_db("info_A", "info_A.qml")
         self.load_layer_from_db("Incident_A", "incident_a.qml")
         self.load_layer_from_db("Incident_B", "incident_b.qml")
-
-        # #Add Items to Combobox
-        # self.selectLayerCombo.clear()
-        # self.selectLayerCombo.addItem("Incident_A")
-        # self.selectLayerCombo.addItem("Incident_B")
 
         #Add Items to ComboboxIncident
         self.comboIncident.clear()
@@ -127,84 +134,22 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         QgsMapLayerRegistry.instance().addMapLayers([sta])
 
 
-    def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-
-    #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
-            if   self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
-                 self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
-            else:
-                 self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
-
-
-    # def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-    #     #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_B").id())
-    #     if  self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
-    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
-    #     else:
-    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
-    #
-
-    # def removeMapLayersB(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-    #         #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_A").id())
-    #         if not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_A")):
-    #             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
-    #         else:
-    #             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
-
-    # def removeMapLayersA(self):  # real signature unknown; restored from __doc__ with multiple overloadse
-    #     #QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("Buffer_B").id())
-    #     if  not self.iface.legendInterface().isLayerVisible(self.layer_dic.get("Buffer_B")):
-    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
-    #     else:
-    #         self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
-
-        # Incident_Blocked_Area
-
-
-
     # after adding features to layers needs a refresh (sometimes)
     def refreshCanvas(self, layer):
         if self.canvas.isCachingEnabled():
             layer.setCacheImage(None)
         else:
             self.canvas.refresh()
-    #
-    # def updateLayers(self):
-    #     layers = uf.getLegendLayers(self.iface, 'all', 'all')
-    #     self.selectLayerCombo.clear()
-    #     if layers:
-    #         layer_names = uf.getLayersListNames(layers)
-    #         self.selectLayerCombo.addItems(layer_names)
-    #         self.setSelectedLayer()
-    #     else:
-    #         self.selectAttributeCombo.clear()
-    #         self.clearChart()
-    #
 
     def setIncident(self):
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
-
-    # def setSelectedLayer(self):
-    #     layer_name = self.selectLayerCombo.currentText()
-    #     self.selected_layer=layer_name
-
-
-    # def getSelectedLayer(self):
-    #     layer_name = self.selectLayerCombo.currentText()
-    #     layer = uf.getLegendLayerByName(self.iface,layer_name)
-    #     return layer
-
-    # #
-    # def getSelectedLayer(self):
-    #     layer_name = "Incident_A"
-    #     layer = uf.getLegendLayerByName(self.iface, layer_name)
-    #     print "layer",layer
-    #     return layer
-
-    # def getSelectedAttribute(self):
-    #     field_name = self.selectAttributeCombo.currentText()
-    #     return field_name
+        if layer_name == "Incident_A":
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
+        elif layer_name == "Incident_B":
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
 
     # buffer functions
     def getBufferCutoff(self):
@@ -213,7 +158,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             return uf.convertNumeric(cutoff)
         else:
             return 0
-
 
     def calculateBuffer(self):
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
@@ -249,7 +193,8 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 QgsMapLayerRegistry.instance().addMapLayer(buffer_layer, False)
                 root = QgsProject.instance().layerTreeRoot()
                 root.insertLayer(6, buffer_layer)
-                buffer_layer.setLayerName('Buffers')
+                buffer_layer.setLayerName('Danger_Zone')
+                self.danger_zones.append(buffer_layer)
             # insert buffer polygons
             geoms = []
             values = []
@@ -261,12 +206,137 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             uf.insertTempFeatures(buffer_layer, geoms, values)
             self.refreshCanvas(buffer_layer)
 
-    # def cleanBuffer(self):
-    #
-    #     #QgsMapLayerRegistry.instance().removeMapLayer("Buffers")
-    #      QgsMapLayerRegistry.instance().removeMapLayer(self.layer_dic.get("buffer_layer").id())
+    def cleanBuffer(self):
+        for buffer in self.danger_zones:
+             QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
+        self.danger_zones=[]
+
+
+    def setZone(self):
+        for buffer in self.danger_zones:
+            layer_name = self.danger_zones
+            self.textDanger = layer_name
+
+
+    ###### Block Points
+
+    def intersection_block(self):
+        processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
+        processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None, 'memory:Intersections')
+
+
+
+    ###### Shortest Path
+
+    def select_origins_and_dest(self,orig,dest):
+        ps1_road_id = QgsExpression(orig)
+        incident_a_road_id = QgsExpression(dest)
+        it = self.layer_dic.get("RoadNetwork").getFeatures(QgsFeatureRequest(ps1_road_id))
+        it2 = self.layer_dic.get("RoadNetwork").getFeatures(QgsFeatureRequest(incident_a_road_id))
+        ids1 = [i.id() for i in it]
+        ids2 = [i.id() for i in it2]
+        self.layer_dic.get("RoadNetwork").setSelectedFeatures(ids1+ids2)
+
+    def run_shortest_path(self):
+        orig = ["\"PK_UID\"=6482","\"PK_UID\"=7505","\"PK_UID\"=6661", "\"PK_UID\"=6618","\"PK_UID\"=5368","\"PK_UID\"=1112"]
+        dest = "\"PK_UID\"=6520"
+        for i in range(len(orig)):
+            self.select_origins_and_dest(orig[i],dest); #Origins and Dest
+            self.buildNetwork();
+            self.calculateRoute(i);
+            self.calculate_length(i)
+
+        # Function to calculate length of all shortest path, one thing to notice: If there're more than one path to calculate length, length should be a list, not a variable.
+    def calculate_length(self,id):
+        length = []   # Use a list to store length of all shortest path we got.
+        length.append(id)
+        layer = self.iface.activeLayer()
+        i = 0
+        for path in layer.selectedFeatures():
+            length[i] = path.geometry().length()
+            i += 1
+            length = path.geometry().length()
+        print length
+
+        layer = iface.activeLayer()
+        layer.setCustomProperty("labeling", "pal")
+        layer.setCustomProperty("labeling/enabled", "true")
+        layer.setCustomProperty("labeling/fontFamily", "Arial")
+        layer.setCustomProperty("labeling/fontSize", "10")
+        layer.setCustomProperty("labeling/fieldName", "ename")
+        layer.setCustomProperty("labeling/placement", "2")
+        iface.mapCanvas().refresh()
 
 
 
 
+
+
+    def getNetwork(self):
+
+        # layer = uf.getLegendLayerByName(self.iface, "Incident_A")
+        roads_layer = uf.getLegendLayerByName(self.iface,"RoadNetwork" )
+        #roads_layer = layer.getFeatures()
+        # roads_layer = self.getSelectedLayer()
+        if roads_layer:
+            # see if there is an obstacles layer to subtract roads from the network
+            obstacles_layer = uf.getLegendLayerByName(self.iface, "Obstacles")
+            if obstacles_layer:
+                # retrieve roads outside obstacles (inside = False)
+                features = uf.getFeaturesByIntersection(roads_layer, obstacles_layer, False)
+                # add these roads to a new temporary layer
+                road_network = uf.createTempLayer('Temp_Network', 'LINESTRING', roads_layer.crs().postgisSrid(), [], [])
+                road_network.dataProvider().addFeatures(features)
+            else:
+                road_network = roads_layer
+            return road_network
+        else:
+            return
+
+    def buildNetwork(self):
+
+        self.network_layer = self.getNetwork()
+        if self.network_layer:
+            # get the points to be used as origin and destination
+            # in this case gets the centroid of the selected features
+            layer = uf.getLegendLayerByName(self.iface, "RoadNetwork")
+            selected_sources = self.layer_dic.get("RoadNetwork").selectedFeatures()
+            # selected#_sources = self.getSelectedLayer().selectedFeatures()
+            source_points = [feature.geometry().centroid().asPoint() for feature in selected_sources]
+            # build the graph including these points
+            if len(source_points) > 1:
+                self.graph, self.tied_points = uf.makeUndirectedGraph(self.network_layer, source_points)
+                # the tied points are the new source_points on the graph
+                #if self.graph and self.tied_points:
+                    #text = "network is built for %s points" % len(self.tied_points)
+                    #self.insertReport(text)
+        return
+
+    def calculateRoute(self,nameLayer):
+
+        # origin and destination must be in the set of tied_points
+        options = len(self.tied_points)
+        if options > 1:
+            # origin and destination are given as an index in the tied_points list
+            origin = 0
+            destination = random.randint(1, options - 1)
+            # calculate the shortest path for the given origin and destination
+            path = uf.calculateRouteDijkstra(self.graph, self.tied_points, origin, destination)
+            # store the route results in temporary layer called "Routes"
+            routes_layer = uf.getLegendLayerByName(self.iface, "Routes")
+            print routes_layer
+            # create one if it doesn't exist
+            if not routes_layer:
+                attribs = ['id']
+                types = [QtCore.QVariant.String]
+                routes_layer = uf.createTempLayer('Routes', 'LINESTRING', self.network_layer.crs().postgisSrid(),
+                                                  attribs, types)
+                uf.loadTempLayer(routes_layer)
+            # insert route line
+            for route in routes_layer.getFeatures():
+                print route.id()
+            uf.insertTempFeatures(routes_layer, [path], [[nameLayer, 100.00]])
+
+            buffer = processing.runandload('qgis:fixeddistancebuffer', routes_layer, 10.0, 5, False, None)
+            self.refreshCanvas(routes_layer)
 
