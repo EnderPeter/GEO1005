@@ -240,36 +240,27 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def run_shortest_path(self):
         orig = ["\"PK_UID\"=6482","\"PK_UID\"=7505","\"PK_UID\"=6661", "\"PK_UID\"=6618","\"PK_UID\"=5368","\"PK_UID\"=1112"]
         dest = "\"PK_UID\"=6520"
+        lengths = []
         for i in range(len(orig)):
             self.select_origins_and_dest(orig[i],dest); #Origins and Dest
             self.buildNetwork();
             self.calculateRoute(i);
-            self.calculate_length(i)
+            lengths.append(self.calculate_length(i+1))
+        print lengths
 
         # Function to calculate length of all shortest path, one thing to notice: If there're more than one path to calculate length, length should be a list, not a variable.
     def calculate_length(self,id):
-        length = []   # Use a list to store length of all shortest path we got.
-        length.append(id)
-        layer = self.iface.activeLayer()
-        i = 0
-        for path in layer.selectedFeatures():
-            length[i] = path.geometry().length()
-            i += 1
-            length = path.geometry().length()
-        print length
-
-        layer = iface.activeLayer()
-        layer.setCustomProperty("labeling", "pal")
-        layer.setCustomProperty("labeling/enabled", "true")
-        layer.setCustomProperty("labeling/fontFamily", "Arial")
-        layer.setCustomProperty("labeling/fontSize", "10")
-        layer.setCustomProperty("labeling/fieldName", "ename")
-        layer.setCustomProperty("labeling/placement", "2")
-        iface.mapCanvas().refresh()
-
-
-
-
+        layer = uf.getLegendLayerByName(self.iface, "Routes")
+        for path in layer.getFeatures(QgsFeatureRequest(id)):
+            return  path.geometry().length()
+        # layer = iface.activeLayer()
+        # layer.setCustomProperty("labeling", "pal")
+        # layer.setCustomProperty("labeling/enabled", "true")
+        # layer.setCustomProperty("labeling/fontFamily", "Arial")
+        # layer.setCustomProperty("labeling/fontSize", "10")
+        # layer.setCustomProperty("labeling/fieldName", "ename")
+        # layer.setCustomProperty("labeling/placement", "2")
+        # iface.mapCanvas().refresh()
 
 
     def getNetwork(self):
@@ -312,7 +303,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                     #self.insertReport(text)
         return
 
-    def calculateRoute(self,nameLayer):
+    def calculateRoute(self, name_feature):
 
         # origin and destination must be in the set of tied_points
         options = len(self.tied_points)
@@ -324,7 +315,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             path = uf.calculateRouteDijkstra(self.graph, self.tied_points, origin, destination)
             # store the route results in temporary layer called "Routes"
             routes_layer = uf.getLegendLayerByName(self.iface, "Routes")
-            print routes_layer
+#            print routes_layer
             # create one if it doesn't exist
             if not routes_layer:
                 attribs = ['id']
@@ -333,9 +324,9 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                                                   attribs, types)
                 uf.loadTempLayer(routes_layer)
             # insert route line
-            for route in routes_layer.getFeatures():
-                print route.id()
-            uf.insertTempFeatures(routes_layer, [path], [[nameLayer, 100.00]])
+ #           for route in routes_layer.getFeatures():
+ #               print route.id()
+            uf.insertTempFeatures(routes_layer, [path], [[name_feature, 100.00]])
 
             buffer = processing.runandload('qgis:fixeddistancebuffer', routes_layer, 10.0, 5, False, None)
             self.refreshCanvas(routes_layer)
