@@ -1,31 +1,34 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="2.18.14" simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="0" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
   <edittypes>
-    <edittype widgetv2type="TextEdit" name="PK_UID">
-      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
-    </edittype>
-    <edittype widgetv2type="TextEdit" name="osm_id">
-      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
-    </edittype>
-    <edittype widgetv2type="TextEdit" name="code">
-      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
-    </edittype>
-    <edittype widgetv2type="TextEdit" name="fclass">
+    <edittype widgetv2type="TextEdit" name="id">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
     <edittype widgetv2type="TextEdit" name="name">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="orig_ogc_f">
+    <edittype widgetv2type="TextEdit" name="address">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="X">
+    <edittype widgetv2type="TextEdit" name="agency_typ">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="Y">
+    <edittype widgetv2type="TextEdit" name="n_vehicle">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
-    <edittype widgetv2type="TextEdit" name="orig_ogc_1">
+    <edittype widgetv2type="TextEdit" name="n_officer">
+      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+    </edittype>
+    <edittype widgetv2type="TextEdit" name="equipment">
+      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+    </edittype>
+    <edittype widgetv2type="TextEdit" name="contact">
+      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+    </edittype>
+    <edittype widgetv2type="TextEdit" name="open_time">
+      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
+    </edittype>
+    <edittype widgetv2type="TextEdit" name="PSID">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
   </edittypes>
@@ -45,7 +48,7 @@
           <prop k="outline_width_map_unit_scale" v="0,0,0,0,0,0"/>
           <prop k="outline_width_unit" v="MM"/>
           <prop k="scale_method" v="diameter"/>
-          <prop k="size" v="9.2"/>
+          <prop k="size" v="11.6"/>
           <prop k="size_map_unit_scale" v="0,0,0,0,0,0"/>
           <prop k="size_unit" v="MM"/>
           <prop k="vertical_anchor_point" v="1"/>
@@ -70,7 +73,7 @@
     <property key="labeling/bufferDraw" value="false"/>
     <property key="labeling/bufferJoinStyle" value="128"/>
     <property key="labeling/bufferNoFill" value="false"/>
-    <property key="labeling/bufferSize" value="1"/>
+    <property key="labeling/bufferSize" value="1.4"/>
     <property key="labeling/bufferSizeInMapUnits" value="false"/>
     <property key="labeling/bufferSizeMapUnitScale" value="0,0,0,0,0,0"/>
     <property key="labeling/bufferTransp" value="0"/>
@@ -81,9 +84,9 @@
     <property key="labeling/dist" value="0"/>
     <property key="labeling/distInMapUnits" value="false"/>
     <property key="labeling/distMapUnitScale" value="0,0,0,0,0,0"/>
-    <property key="labeling/drawLabels" value="false"/>
-    <property key="labeling/enabled" value="false"/>
-    <property key="labeling/fieldName" value=""/>
+    <property key="labeling/drawLabels" value="true"/>
+    <property key="labeling/enabled" value="true"/>
+    <property key="labeling/fieldName" value="PSID"/>
     <property key="labeling/fitInPolygonOnly" value="false"/>
     <property key="labeling/fontCapitals" value="0"/>
     <property key="labeling/fontFamily" value="MS Shell Dlg 2"/>
@@ -92,15 +95,15 @@
     <property key="labeling/fontLimitPixelSize" value="false"/>
     <property key="labeling/fontMaxPixelSize" value="10000"/>
     <property key="labeling/fontMinPixelSize" value="3"/>
-    <property key="labeling/fontSize" value="8.25"/>
+    <property key="labeling/fontSize" value="6.25"/>
     <property key="labeling/fontSizeInMapUnits" value="false"/>
     <property key="labeling/fontSizeMapUnitScale" value="0,0,0,0,0,0"/>
     <property key="labeling/fontStrikeout" value="false"/>
     <property key="labeling/fontUnderline" value="false"/>
-    <property key="labeling/fontWeight" value="50"/>
+    <property key="labeling/fontWeight" value="75"/>
     <property key="labeling/fontWordSpacing" value="0"/>
     <property key="labeling/formatNumbers" value="false"/>
-    <property key="labeling/isExpression" value="true"/>
+    <property key="labeling/isExpression" value="false"/>
     <property key="labeling/labelOffsetInMapUnits" value="true"/>
     <property key="labeling/labelOffsetMapUnitScale" value="0,0,0,0,0,0"/>
     <property key="labeling/labelPerPart" value="false"/>
@@ -111,15 +114,15 @@
     <property key="labeling/maxNumLabels" value="2000"/>
     <property key="labeling/mergeLines" value="false"/>
     <property key="labeling/minFeatureSize" value="0"/>
-    <property key="labeling/multilineAlign" value="3"/>
+    <property key="labeling/multilineAlign" value="1"/>
     <property key="labeling/multilineHeight" value="1"/>
-    <property key="labeling/namedStyle" value="Normal"/>
+    <property key="labeling/namedStyle" value="Bold"/>
     <property key="labeling/obstacle" value="true"/>
     <property key="labeling/obstacleFactor" value="1"/>
     <property key="labeling/obstacleType" value="0"/>
     <property key="labeling/offsetType" value="0"/>
     <property key="labeling/placeDirectionSymbol" value="0"/>
-    <property key="labeling/placement" value="6"/>
+    <property key="labeling/placement" value="1"/>
     <property key="labeling/placementFlags" value="10"/>
     <property key="labeling/plussign" value="false"/>
     <property key="labeling/predefinedPositionOrder" value="TR,TL,BR,BL,R,L,TSR,BSR"/>
@@ -186,15 +189,15 @@
     <property key="labeling/shapeType" value="0"/>
     <property key="labeling/substitutions" value="&lt;substitutions/>"/>
     <property key="labeling/textColorA" value="255"/>
-    <property key="labeling/textColorB" value="0"/>
-    <property key="labeling/textColorG" value="0"/>
-    <property key="labeling/textColorR" value="0"/>
+    <property key="labeling/textColorB" value="255"/>
+    <property key="labeling/textColorG" value="255"/>
+    <property key="labeling/textColorR" value="255"/>
     <property key="labeling/textTransp" value="0"/>
     <property key="labeling/upsidedownLabels" value="0"/>
-    <property key="labeling/useSubstitutions" value="false"/>
+    <property key="labeling/useSubstitutions" value="true"/>
     <property key="labeling/wrapChar" value=""/>
-    <property key="labeling/xOffset" value="0"/>
-    <property key="labeling/yOffset" value="0"/>
+    <property key="labeling/xOffset" value="12.2"/>
+    <property key="labeling/yOffset" value="1"/>
     <property key="labeling/zIndex" value="0"/>
     <property key="variableNames"/>
     <property key="variableValues"/>
@@ -254,31 +257,33 @@
   <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="0" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
   <annotationform></annotationform>
   <aliases>
-    <alias field="PK_UID" index="0" name=""/>
-    <alias field="osm_id" index="1" name=""/>
-    <alias field="code" index="2" name=""/>
-    <alias field="fclass" index="3" name=""/>
-    <alias field="name" index="4" name=""/>
-    <alias field="orig_ogc_f" index="5" name=""/>
-    <alias field="X" index="6" name=""/>
-    <alias field="Y" index="7" name=""/>
-    <alias field="orig_ogc_1" index="8" name=""/>
+    <alias field="id" index="0" name=""/>
+    <alias field="name" index="1" name=""/>
+    <alias field="address" index="2" name=""/>
+    <alias field="agency_typ" index="3" name=""/>
+    <alias field="n_vehicle" index="4" name=""/>
+    <alias field="n_officer" index="5" name=""/>
+    <alias field="equipment" index="6" name=""/>
+    <alias field="contact" index="7" name=""/>
+    <alias field="open_time" index="8" name=""/>
+    <alias field="PSID" index="9" name=""/>
   </aliases>
   <excludeAttributesWMS/>
   <excludeAttributesWFS/>
   <attributeactions default="-1"/>
-  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="570948248">
+  <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
     <columns>
-      <column width="-1" hidden="0" type="field" name="PK_UID"/>
-      <column width="-1" hidden="0" type="field" name="osm_id"/>
-      <column width="-1" hidden="0" type="field" name="code"/>
-      <column width="-1" hidden="0" type="field" name="fclass"/>
       <column width="-1" hidden="0" type="field" name="name"/>
-      <column width="-1" hidden="0" type="field" name="orig_ogc_f"/>
-      <column width="-1" hidden="0" type="field" name="X"/>
-      <column width="-1" hidden="0" type="field" name="Y"/>
-      <column width="-1" hidden="0" type="field" name="orig_ogc_1"/>
       <column width="-1" hidden="1" type="actions"/>
+      <column width="-1" hidden="0" type="field" name="id"/>
+      <column width="-1" hidden="0" type="field" name="address"/>
+      <column width="-1" hidden="0" type="field" name="agency_typ"/>
+      <column width="-1" hidden="0" type="field" name="n_vehicle"/>
+      <column width="-1" hidden="0" type="field" name="n_officer"/>
+      <column width="-1" hidden="0" type="field" name="equipment"/>
+      <column width="-1" hidden="0" type="field" name="contact"/>
+      <column width="-1" hidden="0" type="field" name="open_time"/>
+      <column width="-1" hidden="0" type="field" name="PSID"/>
     </columns>
   </attributetableconfig>
   <editform></editform>
@@ -310,16 +315,17 @@ def my_form_open(dialog, layer, feature):
     <fieldstyles/>
   </conditionalstyles>
   <defaults>
-    <default field="PK_UID" expression=""/>
-    <default field="osm_id" expression=""/>
-    <default field="code" expression=""/>
-    <default field="fclass" expression=""/>
+    <default field="id" expression=""/>
     <default field="name" expression=""/>
-    <default field="orig_ogc_f" expression=""/>
-    <default field="X" expression=""/>
-    <default field="Y" expression=""/>
-    <default field="orig_ogc_1" expression=""/>
+    <default field="address" expression=""/>
+    <default field="agency_typ" expression=""/>
+    <default field="n_vehicle" expression=""/>
+    <default field="n_officer" expression=""/>
+    <default field="equipment" expression=""/>
+    <default field="contact" expression=""/>
+    <default field="open_time" expression=""/>
+    <default field="PSID" expression=""/>
   </defaults>
-  <previewExpression></previewExpression>
+  <previewExpression>COALESCE( "name", '&lt;NULL>' )</previewExpression>
   <layerGeometryType>0</layerGeometryType>
 </qgis>

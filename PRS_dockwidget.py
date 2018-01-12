@@ -74,21 +74,17 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         # data
         self.openScenario.clicked.connect(self.zoom)
-        #self.incident_a.clicked.connect(self.removeMapLayersB)
-        #self.incident_b.clicked.connect(self.removeMapLayersA)
-        #self.selectLayerCombo.activated.connect(self.setSelectedLayer)
         self.comboIncident.activated.connect(self.setIncident)
-        #self.comboIncident.activated.connect(self.removeMapLayersB)
-        #self.comboIncident.activated.connect(self.removeMapLayersA)
+        self.fixPosition.clicked.connect(self.fix)
+
         #analysis
         #self.setNetworkButton.clicked.connect(self.buildNetwork)
         self.buffer_zone.clicked.connect(self.calculateBuffer)
         self.shortestPath.clicked.connect(self.run_shortest_path)
-        #self.selectZone.activated.connect(self.setZone)
         self.intersection_button.clicked.connect(self.intersection_block)
-        self.show_path_length.clicked.connect(self.calculate_length)
 
-        # # #remove layers
+
+        #remove layers
         self.clean_buffer.clicked.connect(self.cleanBuffer)
 
         self.graph = QgsGraph()
@@ -119,6 +115,10 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.comboIncident.addItem("-")
         self.comboIncident.addItem("Incident_A")
         self.comboIncident.addItem("Incident_B")
+
+    def fix(self):
+        self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
+        self.iface.mapCanvas().refresh()
 
 
     def load_layer_from_db(self, layer_name,style_name):
@@ -183,7 +183,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 attribs = ['id', 'distance']
                 types = [QVariant.String, QVariant.Double]
                 buffer_layer = uf.createTempLayer('Buffers','POLYGON',layer.crs().postgisSrid(), attribs, types)
-                buffer_layer.setLayerTransparency(20)
+                buffer_layer.setLayerTransparency(55)
 
                 ###Colorif layer_name ==incien_a use color xx xx
                 symbols = buffer_layer.rendererV2().symbols()
@@ -251,18 +251,18 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.resultTextEdit.clear()
         #lenghts by tab
         textBox = dict()
-        textBox["PS1"]=lengths[0]
-        textBox["PS2"] = lengths[1]
-        textBox["PS3"] = lengths[2]
-        textBox["PS4"] = lengths[3]
-        textBox["PS5"] = lengths[4]
-        textBox["PS6"] = lengths[5]
+        textBox["Zeehaven (ZH)        "] =  lengths[0]
+        textBox["Zuidplein (ZP)           "] = lengths[1]
+        textBox["Boezemsingel (BZ)    "] = lengths[2]
+        textBox["Marconiplein (MP)    "] = lengths[3]
+        textBox["Targer Water (TW)    "] = lengths[4]
+        textBox["Tabor Street (TS)    "] = lengths[5]
 
         #sort by near police station
         format_results = ""
         for key, value in sorted(textBox.iteritems(), key=lambda (k,v): (v,k)):
             self.resultTextEdit.insertPlainText(key)
-            self.resultTextEdit.insertPlainText("\t")
+            self.resultTextEdit.insertPlainText("    ")
             self.resultTextEdit.insertPlainText(str(round(textBox[key]/1000.0, 2))+" km")
             self.resultTextEdit.insertPlainText("\n")
             self.resultTextEdit.insertPlainText("\n")
