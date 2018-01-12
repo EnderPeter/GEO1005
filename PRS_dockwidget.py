@@ -45,6 +45,7 @@ FORM_CLASS, _ = uic.loadUiType(os.path.join(
 class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
 
+
     closingPlugin = pyqtSignal()
     layer_dic=dict()
     danger_zones=[]
@@ -85,7 +86,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
 
         #remove layers
-        self.clean_buffer.clicked.connect(self.cleanBuffer)
+        #self.clean_buffer.clicked.connect(self.cleanBuffer)
 
         self.graph = QgsGraph()
         self.tied_points = []
@@ -146,12 +147,26 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setIncident(self):
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
+        print layer_name
         if layer_name == "Incident_A":
+
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
+            feature = self.layer_dic.get("Incident_A").getFeatures().next()
+
+            #featurelist = []
+            #for i in range(1, 3):
+            #featurelist.append(feature[i])
+            #print featurelist
+
+            fields = uf.getFieldNames(self.layer_dic.get("Incident_A"))
+            self.ReportInformation.clear()
+            self.ReportInformation.addItems(fields)
+
         elif layer_name == "Incident_B":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
+
 
     # buffer functions
     def getBufferCutoff(self):
@@ -162,6 +177,11 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             return 0
 
     def calculateBuffer(self):
+
+        for buffer in self.danger_zones:
+             QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
+        self.danger_zones=[]
+
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
         layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
         origins = layer.getFeatures()
@@ -208,10 +228,10 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             uf.insertTempFeatures(buffer_layer, geoms, values)
             self.refreshCanvas(buffer_layer)
 
-    def cleanBuffer(self):
-        for buffer in self.danger_zones:
-             QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
-        self.danger_zones=[]
+    #def cleanBuffer(self):
+        #for buffer in self.danger_zones:
+             #QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
+        #self.danger_zones=[]
 
 
     def setZone(self):
@@ -341,6 +361,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
  #               print route.id()
             uf.insertTempFeatures(routes_layer, [path], [[name_feature, 100.00]])
 
-            buffer = processing.runandload('qgis:fixeddistancebuffer', routes_layer, 10.0, 5, False, None)
+            #buffer = processing.runandload('qgis:fixeddistancebuffer', routes_layer, 10.0, 5, False, None)
             self.refreshCanvas(routes_layer)
 
