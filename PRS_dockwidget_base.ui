@@ -292,6 +292,22 @@
        <string>Path Length</string>
       </property>
      </widget>
+     <widget class="QPlainTextEdit" name="resultTextEdit">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>160</y>
+        <width>331</width>
+        <height>171</height>
+       </rect>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

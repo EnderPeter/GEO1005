@@ -185,6 +185,7 @@ class PRS_PoliceResponseSystem:
         #print "** CLOSING PRS_PoliceResponseSystem"
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         # disconnects
+        self.dockwidget.resultTextEdit.clear()
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
 
         # remove this statement if dockwidget is to remain

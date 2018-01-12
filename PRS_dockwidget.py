@@ -93,10 +93,12 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         self.graph = QgsGraph()
         self.tied_points = []
+        self.resultTextEdit.clear()
 
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
+        self.resultTextEdit.clear()
         event.accept()
 
     def zoom(self):
@@ -246,22 +248,33 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.buildNetwork();
             self.calculateRoute(i);
             lengths.append(self.calculate_length(i+1))
-        print lengths
+        self.resultTextEdit.clear()
+        #lenghts by tab
+        textBox = dict()
+        textBox["PS1"]=lengths[0]
+        textBox["PS2"] = lengths[1]
+        textBox["PS3"] = lengths[2]
+        textBox["PS4"] = lengths[3]
+        textBox["PS5"] = lengths[4]
+        textBox["PS6"] = lengths[5]
+
+        #sort by near police station
+        format_results = ""
+        for key, value in sorted(textBox.iteritems(), key=lambda (k,v): (v,k)):
+            self.resultTextEdit.insertPlainText(key)
+            self.resultTextEdit.insertPlainText("\t")
+            self.resultTextEdit.insertPlainText(str(round(textBox[key]/1000.0, 2))+" km")
+            self.resultTextEdit.insertPlainText("\n")
+            self.resultTextEdit.insertPlainText("\n")
+        #print format_results
+        #self.resultTextEdit.insertPlainText(format_results)
+
 
         # Function to calculate length of all shortest path, one thing to notice: If there're more than one path to calculate length, length should be a list, not a variable.
     def calculate_length(self,id):
         layer = uf.getLegendLayerByName(self.iface, "Routes")
         for path in layer.getFeatures(QgsFeatureRequest(id)):
             return  path.geometry().length()
-        # layer = iface.activeLayer()
-        # layer.setCustomProperty("labeling", "pal")
-        # layer.setCustomProperty("labeling/enabled", "true")
-        # layer.setCustomProperty("labeling/fontFamily", "Arial")
-        # layer.setCustomProperty("labeling/fontSize", "10")
-        # layer.setCustomProperty("labeling/fieldName", "ename")
-        # layer.setCustomProperty("labeling/placement", "2")
-        # iface.mapCanvas().refresh()
-
 
     def getNetwork(self):
 
