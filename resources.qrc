@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/plugins/PRS_PoliceResponseSystem" >
         <file>icon.png</file>
+        <file>data/icons/terrorist.png</file>
     </qresource>
 </RCC>

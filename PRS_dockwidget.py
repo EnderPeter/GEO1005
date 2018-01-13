@@ -35,6 +35,8 @@ from qgis._core import QgsMapLayerRegistry, QgsDataSourceURI, QgsRectangle, QgsV
 from qgis.networkanalysis import *
 import processing
 from . import utility_functions as uf
+import resources
+
 
 import random
 
@@ -117,6 +119,16 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.comboIncident.addItem("Incident_A")
         self.comboIncident.addItem("Incident_B")
 
+        #Add Markers
+        info = uf.getLegendLayerByName(self.iface,"info_A")
+        cur_dir = os.path.dirname(os.path.realpath(__file__))
+        thief_marker = os.path.join(cur_dir, "data", "markers", "thief.svg")
+        svg_style = dict()
+        svg_style['name']=thief_marker
+        svg_style['size']='4.5'
+        symLyr1 = QgsSvgMarkerSymbolLayerV2.create(svg_style)
+        info.rendererV2().symbols()[0].changeSymbolLayer(0, symLyr1)
+
     def fix(self):
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
         self.iface.mapCanvas().refresh()
@@ -147,21 +159,31 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setIncident(self):
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
-        print layer_name
+        #print layer_name
         if layer_name == "Incident_A":
+
 
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
-            feature = self.layer_dic.get("Incident_A").getFeatures().next()
 
-            #featurelist = []
-            #for i in range(1, 3):
-            #featurelist.append(feature[i])
-            #print featurelist
-
-            fields = uf.getFieldNames(self.layer_dic.get("Incident_A"))
-            self.ReportInformation.clear()
-            self.ReportInformation.addItems(fields)
+            # layer_test = uf.getLegendLayerByName(self.iface, layer_name)
+            # feature= layer_test.getFeatures().next()
+            #
+            # print "sindic", feature
+            #
+            # feature2 = self.layer_dic.get("Incident_A").getFeatures().next()
+            # print feature2
+            #
+            #
+            # #self.reportList.insertItem(0, item)
+            # # featurelist = []
+            # # for i in range(1, 2):
+            # #     featurelist.append(feature[i])
+            # #     print featurelist
+            #
+            # #fields = uf.get(self.layer_dic.get("Incident_A"))
+            # self.ReportInformation.clear()
+            # self.ReportInformation.addItems(feature)
 
         elif layer_name == "Incident_B":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
@@ -186,6 +208,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
         layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
         origins = layer.getFeatures()
+
         #origins = self.getSelectedLayer().selectedFeatures()
         #layer = self.getSelectedLayer()
         if origins > 0:
