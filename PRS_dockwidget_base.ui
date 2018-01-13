@@ -27,14 +27,28 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>20</y>
+      <y>21</y>
       <width>391</width>
-      <height>21</height>
+      <height>22</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <family>NewsGoth Lt BT</family>
+         <pointsize>9</pointsize>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="mouseTracking">
+        <bool>true</bool>
+       </property>
+       <property name="autoFillBackground">
+        <bool>true</bool>
+       </property>
        <property name="text">
         <string>Select Incident:</string>
        </property>
@@ -45,7 +59,7 @@
        <property name="maximumSize">
         <size>
          <width>400</width>
-         <height>458</height>
+         <height>600</height>
         </size>
        </property>
       </widget>
@@ -59,7 +73,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>50</y>
+      <y>60</y>
       <width>391</width>
       <height>461</height>
      </rect>
@@ -71,7 +85,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -94,9 +108,9 @@
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
+        <y>40</y>
         <width>371</width>
-        <height>371</height>
+        <height>341</height>
        </rect>
       </property>
      </widget>
@@ -109,7 +123,7 @@
       <property name="geometry">
        <rect>
         <x>180</x>
-        <y>10</y>
+        <y>20</y>
         <width>71</width>
         <height>22</height>
        </rect>
@@ -121,8 +135,8 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>10</y>
+        <x>38</x>
+        <y>28</y>
         <width>151</width>
         <height>16</height>
        </rect>
@@ -132,16 +146,19 @@
       </property>
      </widget>
      <widget class="QPushButton" name="intersection_button">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>50</y>
-        <width>381</width>
+        <x>6</x>
+        <y>73</y>
+        <width>251</width>
         <height>28</height>
        </rect>
       </property>
       <property name="text">
-       <string>Display Block Points</string>
+       <string>Calculate Block Points</string>
       </property>
      </widget>
      <widget class="QPushButton" name="pushButton_4">
@@ -207,7 +224,7 @@
       <property name="geometry">
        <rect>
         <x>290</x>
-        <y>10</y>
+        <y>20</y>
         <width>81</width>
         <height>23</height>
        </rect>
@@ -245,10 +262,23 @@
        <string>Fix Position</string>
       </property>
      </widget>
+     <widget class="QPushButton" name="clear_points">
+      <property name="geometry">
+       <rect>
+        <x>290</x>
+        <y>76</y>
+        <width>81</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Clear Points</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="Decision">
      <attribute name="title">
-      <string>Decision</string>
+      <string>Police Stations</string>
      </attribute>
      <widget class="QPushButton" name="bufferButton_2">
       <property name="geometry">

@@ -86,7 +86,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
 
         #remove layers
-        #self.clean_buffer.clicked.connect(self.cleanBuffer)
+        self.clear_points.clicked.connect(self.clean)
 
         self.graph = QgsGraph()
         self.tied_points = []
@@ -167,7 +167,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
 
-
     # buffer functions
     def getBufferCutoff(self):
         cutoff = self.bufferCutoffEdit.text()
@@ -176,11 +175,13 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         else:
             return 0
 
+
     def calculateBuffer(self):
 
+        #clean Buffer
         for buffer in self.danger_zones:
-             QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
-        self.danger_zones=[]
+            QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
+        self.danger_zones = []
 
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
         layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
@@ -228,12 +229,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             uf.insertTempFeatures(buffer_layer, geoms, values)
             self.refreshCanvas(buffer_layer)
 
-    #def cleanBuffer(self):
-        #for buffer in self.danger_zones:
-             #QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
-        #self.danger_zones=[]
-
-
     def setZone(self):
         for buffer in self.danger_zones:
             layer_name = self.danger_zones
@@ -246,6 +241,15 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
         processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None, 'memory:Intersections')
 
+
+
+    def clean (self):
+
+
+        lines_polygons_layer = uf.getLegendLayerByName(self.iface, "Lines from polygons")
+        intersection_layer = uf.getLegendLayerByName(self.iface, "Intersections")
+        QgsMapLayerRegistry.instance().removeMapLayer(intersection_layer.id())
+        QgsMapLayerRegistry.instance().removeMapLayer(lines_polygons_layer.id())
 
 
     ###### Shortest Path
