@@ -1,9 +1,6 @@
 <!DOCTYPE qgis PUBLIC 'http://mrcc.com/qgis.dtd' 'SYSTEM'>
 <qgis version="2.18.14" simplifyAlgorithm="0" minimumScale="0" maximumScale="1e+08" simplifyDrawingHints="1" minLabelScale="0" maxLabelScale="1e+08" simplifyDrawingTol="1" readOnly="0" simplifyMaxScale="1" hasScaleBasedVisibilityFlag="0" simplifyLocal="1" scaleBasedLabelVisibilityFlag="0">
   <edittypes>
-    <edittype widgetv2type="TextEdit" name="PK_UID">
-      <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
-    </edittype>
     <edittype widgetv2type="TextEdit" name="sid">
       <widgetv2config IsMultiline="0" fieldEditable="1" constraint="" UseHtml="0" labelOnTop="0" constraintDescription="" notNull="0"/>
     </edittype>
@@ -150,9 +147,9 @@
           <prop k="customdash_unit" v="MM"/>
           <prop k="draw_inside_polygon" v="0"/>
           <prop k="joinstyle" v="bevel"/>
-          <prop k="line_color" v="138,131,139,255"/>
+          <prop k="line_color" v="168,160,169,255"/>
           <prop k="line_style" v="solid"/>
-          <prop k="line_width" v="0.35"/>
+          <prop k="line_width" v="0.23"/>
           <prop k="line_width_unit" v="MM"/>
           <prop k="offset" v="0"/>
           <prop k="offset_map_unit_scale" v="0,0,0,0,0,0"/>
@@ -337,7 +334,6 @@
   <SingleCategoryDiagramRenderer diagramType="Histogram" sizeLegend="0" attributeLegend="1">
     <DiagramCategory penColor="#000000" labelPlacementMethod="XHeight" penWidth="0" diagramOrientation="Up" sizeScale="0,0,0,0,0,0" minimumSize="0" barWidth="5" penAlpha="255" maxScaleDenominator="1e+08" backgroundColor="#ffffff" transparency="0" width="15" scaleDependency="Area" backgroundAlpha="255" angleOffset="1440" scaleBasedVisibility="0" enabled="0" height="15" lineSizeScale="0,0,0,0,0,0" sizeType="MM" lineSizeType="MM" minScaleDenominator="inf">
       <fontProperties description="MS Shell Dlg 2,8.25,-1,5,50,0,0,0,0,0" style=""/>
-      <attribute field="" color="#000000" label=""/>
     </DiagramCategory>
     <symbol alpha="1" clip_to_extent="1" type="marker" name="sizeSymbol">
       <layer pass="0" class="SimpleMarker" locked="0">
@@ -365,59 +361,57 @@
   <DiagramLayerSettings yPosColumn="-1" showColumn="-1" linePlacementFlags="10" placement="2" dist="0" xPosColumn="-1" priority="0" obstacle="0" zIndex="0" showAll="1"/>
   <annotationform></annotationform>
   <aliases>
-    <alias field="PK_UID" index="0" name=""/>
-    <alias field="sid" index="1" name=""/>
-    <alias field="wvk_id" index="2" name=""/>
-    <alias field="wvk_begdat" index="3" name=""/>
-    <alias field="jte_id_beg" index="4" name=""/>
-    <alias field="jte_id_end" index="5" name=""/>
-    <alias field="wegbehsrt" index="6" name=""/>
-    <alias field="wegnummer" index="7" name=""/>
-    <alias field="wegdeelltr" index="8" name=""/>
-    <alias field="hecto_lttr" index="9" name=""/>
-    <alias field="rpe_code" index="10" name=""/>
-    <alias field="bst_code" index="11" name=""/>
-    <alias field="admrichtng" index="12" name=""/>
-    <alias field="rijrichtng" index="13" name=""/>
-    <alias field="stt_naam" index="14" name=""/>
-    <alias field="wpsnaamnen" index="15" name=""/>
-    <alias field="gme_id" index="16" name=""/>
-    <alias field="gme_naam" index="17" name=""/>
-    <alias field="hnrstrlnks" index="18" name=""/>
-    <alias field="hnrstrrhts" index="19" name=""/>
-    <alias field="e_hnr_lnks" index="20" name=""/>
-    <alias field="e_hnr_rhts" index="21" name=""/>
-    <alias field="l_hnr_lnks" index="22" name=""/>
-    <alias field="l_hnr_rhts" index="23" name=""/>
-    <alias field="begafstand" index="24" name=""/>
-    <alias field="endafstand" index="25" name=""/>
-    <alias field="beginkm" index="26" name=""/>
-    <alias field="eindkm" index="27" name=""/>
-    <alias field="pos_tv_wol" index="28" name=""/>
-    <alias field="wegbehcode" index="29" name=""/>
-    <alias field="wegbehnaam" index="30" name=""/>
-    <alias field="distrcode" index="31" name=""/>
-    <alias field="distrnaam" index="32" name=""/>
-    <alias field="dienstcode" index="33" name=""/>
-    <alias field="dienstnaam" index="34" name=""/>
-    <alias field="wegtype" index="35" name=""/>
-    <alias field="wgtype_oms" index="36" name=""/>
-    <alias field="routeltr" index="37" name=""/>
-    <alias field="routenr" index="38" name=""/>
-    <alias field="routeltr2" index="39" name=""/>
-    <alias field="routenr2" index="40" name=""/>
-    <alias field="routeltr3" index="41" name=""/>
-    <alias field="routenr3" index="42" name=""/>
-    <alias field="routeltr4" index="43" name=""/>
-    <alias field="routenr4" index="44" name=""/>
-    <alias field="wegnr_aw" index="45" name=""/>
+    <alias field="sid" index="0" name=""/>
+    <alias field="wvk_id" index="1" name=""/>
+    <alias field="wvk_begdat" index="2" name=""/>
+    <alias field="jte_id_beg" index="3" name=""/>
+    <alias field="jte_id_end" index="4" name=""/>
+    <alias field="wegbehsrt" index="5" name=""/>
+    <alias field="wegnummer" index="6" name=""/>
+    <alias field="wegdeelltr" index="7" name=""/>
+    <alias field="hecto_lttr" index="8" name=""/>
+    <alias field="rpe_code" index="9" name=""/>
+    <alias field="bst_code" index="10" name=""/>
+    <alias field="admrichtng" index="11" name=""/>
+    <alias field="rijrichtng" index="12" name=""/>
+    <alias field="stt_naam" index="13" name=""/>
+    <alias field="wpsnaamnen" index="14" name=""/>
+    <alias field="gme_id" index="15" name=""/>
+    <alias field="gme_naam" index="16" name=""/>
+    <alias field="hnrstrlnks" index="17" name=""/>
+    <alias field="hnrstrrhts" index="18" name=""/>
+    <alias field="e_hnr_lnks" index="19" name=""/>
+    <alias field="e_hnr_rhts" index="20" name=""/>
+    <alias field="l_hnr_lnks" index="21" name=""/>
+    <alias field="l_hnr_rhts" index="22" name=""/>
+    <alias field="begafstand" index="23" name=""/>
+    <alias field="endafstand" index="24" name=""/>
+    <alias field="beginkm" index="25" name=""/>
+    <alias field="eindkm" index="26" name=""/>
+    <alias field="pos_tv_wol" index="27" name=""/>
+    <alias field="wegbehcode" index="28" name=""/>
+    <alias field="wegbehnaam" index="29" name=""/>
+    <alias field="distrcode" index="30" name=""/>
+    <alias field="distrnaam" index="31" name=""/>
+    <alias field="dienstcode" index="32" name=""/>
+    <alias field="dienstnaam" index="33" name=""/>
+    <alias field="wegtype" index="34" name=""/>
+    <alias field="wgtype_oms" index="35" name=""/>
+    <alias field="routeltr" index="36" name=""/>
+    <alias field="routenr" index="37" name=""/>
+    <alias field="routeltr2" index="38" name=""/>
+    <alias field="routenr2" index="39" name=""/>
+    <alias field="routeltr3" index="40" name=""/>
+    <alias field="routenr3" index="41" name=""/>
+    <alias field="routeltr4" index="42" name=""/>
+    <alias field="routenr4" index="43" name=""/>
+    <alias field="wegnr_aw" index="44" name=""/>
   </aliases>
   <excludeAttributesWMS/>
   <excludeAttributesWFS/>
   <attributeactions default="-1"/>
   <attributetableconfig actionWidgetStyle="dropDown" sortExpression="" sortOrder="0">
     <columns>
-      <column width="-1" hidden="0" type="field" name="PK_UID"/>
       <column width="-1" hidden="0" type="field" name="sid"/>
       <column width="-1" hidden="0" type="field" name="wvk_id"/>
       <column width="-1" hidden="0" type="field" name="wvk_begdat"/>
@@ -495,7 +489,6 @@ def my_form_open(dialog, layer, feature):
     <fieldstyles/>
   </conditionalstyles>
   <defaults>
-    <default field="PK_UID" expression=""/>
     <default field="sid" expression=""/>
     <default field="wvk_id" expression=""/>
     <default field="wvk_begdat" expression=""/>

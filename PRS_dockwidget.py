@@ -119,15 +119,51 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.comboIncident.addItem("Incident_A")
         self.comboIncident.addItem("Incident_B")
 
-        #Add Markers
+        #Add SVG Markers
         info = uf.getLegendLayerByName(self.iface,"info_A")
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         thief_marker = os.path.join(cur_dir, "data", "markers", "thief.svg")
-        svg_style = dict()
-        svg_style['name']=thief_marker
-        svg_style['size']='4.5'
-        symLyr1 = QgsSvgMarkerSymbolLayerV2.create(svg_style)
-        info.rendererV2().symbols()[0].changeSymbolLayer(0, symLyr1)
+        svg_style_terrorist = dict()
+        svg_style_terrorist['name']=thief_marker
+        svg_style_terrorist['size']='5'
+
+        guns_marker = os.path.join(cur_dir, "data", "markers", "guns.svg")
+        svg_style_guns = dict()
+        svg_style_guns['name'] = guns_marker
+        svg_style_guns['size'] = '16'
+
+        hostage_marker = os.path.join(cur_dir, "data", "markers", "hostage.svg")
+        svg_style_hostage = dict()
+        svg_style_hostage['name'] = hostage_marker
+        svg_style_hostage['size'] = '15'
+
+
+        symLyr1 = QgsMarkerSymbolV2.createSimple({"color" : "255,255,255","color_border": "0,0,0",'outline_width': '0.0','size': '0.3'})
+        symLyr1.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_terrorist))
+
+        symLyr2 = QgsMarkerSymbolV2.createSimple({"color": "255,255,255", "outline": "255,255,255", 'outline_width': '0.0', 'size': '0.3'})
+        symLyr2.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_guns))
+
+        symLyr3 = QgsMarkerSymbolV2.createSimple({"color" : "255,255,255","outline" :"255,255,255",'outline_width': '0.0','size': '0.3'})
+        symLyr3.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_hostage))
+
+        # create renderer object
+        fni = info.fieldNameIndex('PK_UID')
+        unique_values = info.dataProvider().uniqueValues(fni)
+        print unique_values
+        category1 = QgsRendererCategoryV2(str(unique_values[0]), symLyr1, str(unique_values[0]))
+        category2 = QgsRendererCategoryV2(str(unique_values[1]), symLyr2, str(unique_values[1]))
+        category3 = QgsRendererCategoryV2(str(unique_values[2]), symLyr3, str(unique_values[2]))
+
+        # entry for the list of category items
+        categories=[]
+        categories.append(category1)
+        categories.append(category2)
+        categories.append(category3)
+        renderer = QgsCategorizedSymbolRendererV2('PK_UID', categories)
+        info.setRendererV2(renderer)
+
+
 
     def fix(self):
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
