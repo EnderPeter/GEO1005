@@ -331,11 +331,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
         processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None, 'memory:Intersections')
 
-
-
     def clean (self):
-
-
         lines_polygons_layer = uf.getLegendLayerByName(self.iface, "Lines from polygons")
         intersection_layer = uf.getLegendLayerByName(self.iface, "Intersections")
         QgsMapLayerRegistry.instance().removeMapLayer(intersection_layer.id())
@@ -343,7 +339,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
 
     ###### Shortest Path
-
     def select_origins_and_dest(self,orig,dest):
         ps1_road_id = QgsExpression(orig)
         incident_a_road_id = QgsExpression(dest)
@@ -353,14 +348,22 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         ids2 = [i.id() for i in it2]
         self.layer_dic.get("RoadNetwork").setSelectedFeatures(ids1+ids2)
 
-    def run_shortest_path(self):
+    def run_shortest_path(self,dest):
 
-        #load information from police stations
+        # load information from police stations
         self.load_layer_from_db("Police_stations_info", "police_station_info.qml")
+        layer_name = self.comboIncident.currentText()
+        #
+        # routes_layer = uf.getLegendLayerByName(self.iface, "Routes")
+        # self.selected_layer = layer_name
 
-        #origin and destinations
+        if layer_name == "Incident_A":
+            dest = "\"PK_UID\"=6520"
+        elif layer_name == "Incident_B":
+            dest=  "\"PK_UID\"=2782"
+
+             #origin and destinations
         orig = ["\"PK_UID\"=6482","\"PK_UID\"=7505","\"PK_UID\"=6661", "\"PK_UID\"=6618","\"PK_UID\"=5368","\"PK_UID\"=1112"]
-        dest = "\"PK_UID\"=6520"
         lengths = []
         for i in range(len(orig)):
             self.select_origins_and_dest(orig[i],dest); #Origins and Dest
@@ -385,9 +388,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.resultTextEdit.insertPlainText(str(round(textBox[key]/1000.0, 2))+" km")
             self.resultTextEdit.insertPlainText("\n")
             self.resultTextEdit.insertPlainText("\n")
-        #print format_results
         #self.resultTextEdit.insertPlainText(format_results)
-
 
         # Function to calculate length of all shortest path, one thing to notice: If there're more than one path to calculate length, length should be a list, not a variable.
     def calculate_length(self,id):
@@ -455,6 +456,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 routes_layer = uf.createTempLayer('Routes', 'LINESTRING', self.network_layer.crs().postgisSrid(),
                                                   attribs, types)
                 uf.loadTempLayer(routes_layer)
+                #routes_layer.setProperty()
             # insert route line
  #           for route in routes_layer.getFeatures():
  #               print route.id()

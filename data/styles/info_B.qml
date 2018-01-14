@@ -174,7 +174,7 @@
     <property key="labeling/upsidedownLabels" value="0"/>
     <property key="labeling/useSubstitutions" value="false"/>
     <property key="labeling/wrapChar" value=""/>
-    <property key="labeling/xOffset" value="-7.2"/>
+    <property key="labeling/xOffset" value="-9"/>
     <property key="labeling/yOffset" value="0"/>
     <property key="labeling/zIndex" value="0"/>
     <property key="variableNames"/>
