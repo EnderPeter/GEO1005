@@ -76,7 +76,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.canvas.show()
 
         # data
-        self.openScenario.clicked.connect(self.zoom)
+        self.loadSituation.clicked.connect(self.load_situation)
         self.comboIncident.activated.connect(self.setIncident)
         self.fixPosition.clicked.connect(self.fix)
 
@@ -100,7 +100,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.resultTextEdit.clear()
         event.accept()
 
-    def zoom(self):
+    def load_situation(self):
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
         self.iface.mapCanvas().refresh()
 
@@ -110,6 +110,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.load_layer_from_db("Buffer_A", "buffer_a.qml")
         self.load_layer_from_db("Buffer_B", "buffer_b.qml")
         self.load_layer_from_db("info_A", "info_A.qml")
+        self.load_layer_from_db("info_B", "info_B.qml")
         self.load_layer_from_db("Incident_A", "incident_a.qml")
         self.load_layer_from_db("Incident_B", "incident_b.qml")
 
@@ -120,37 +121,35 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.comboIncident.addItem("Incident_B")
 
         #Add SVG Markers
+        #Incident_A
         info = uf.getLegendLayerByName(self.iface,"info_A")
-        cur_dir = os.path.dirname(os.path.realpath(__file__))
-        thief_marker = os.path.join(cur_dir, "data", "markers", "thief.svg")
+        cur_dir_A = os.path.dirname(os.path.realpath(__file__))
+        terrorist_marker = os.path.join(cur_dir_A, "data", "markers", "thief.svg")
         svg_style_terrorist = dict()
-        svg_style_terrorist['name']=thief_marker
+        svg_style_terrorist['name']=terrorist_marker
         svg_style_terrorist['size']='5'
 
-        guns_marker = os.path.join(cur_dir, "data", "markers", "guns.svg")
+        guns_marker = os.path.join(cur_dir_A, "data", "markers", "guns.svg")
         svg_style_guns = dict()
         svg_style_guns['name'] = guns_marker
         svg_style_guns['size'] = '16'
 
-        hostage_marker = os.path.join(cur_dir, "data", "markers", "hostage.svg")
+        hostage_marker = os.path.join(cur_dir_A, "data", "markers", "hostage.svg")
         svg_style_hostage = dict()
         svg_style_hostage['name'] = hostage_marker
-        svg_style_hostage['size'] = '15'
-
+        svg_style_hostage['size'] = '7.5'
 
         symLyr1 = QgsMarkerSymbolV2.createSimple({"color" : "255,255,255","color_border": "0,0,0",'outline_width': '0.0','size': '0.3'})
         symLyr1.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_terrorist))
-
         symLyr2 = QgsMarkerSymbolV2.createSimple({"color": "255,255,255", "outline": "255,255,255", 'outline_width': '0.0', 'size': '0.3'})
         symLyr2.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_guns))
-
         symLyr3 = QgsMarkerSymbolV2.createSimple({"color" : "255,255,255","outline" :"255,255,255",'outline_width': '0.0','size': '0.3'})
         symLyr3.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_hostage))
 
         # create renderer object
         fni = info.fieldNameIndex('PK_UID')
         unique_values = info.dataProvider().uniqueValues(fni)
-        print unique_values
+        # print unique_values
         category1 = QgsRendererCategoryV2(str(unique_values[0]), symLyr1, str(unique_values[0]))
         category2 = QgsRendererCategoryV2(str(unique_values[1]), symLyr2, str(unique_values[1]))
         category3 = QgsRendererCategoryV2(str(unique_values[2]), symLyr3, str(unique_values[2]))
@@ -163,7 +162,48 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         renderer = QgsCategorizedSymbolRendererV2('PK_UID', categories)
         info.setRendererV2(renderer)
 
+        # SVG marker Incident_B
+        infoB = uf.getLegendLayerByName(self.iface, "info_B")
+        cur_dir_B = os.path.dirname(os.path.realpath(__file__))
+        terrorist_marker_B = os.path.join(cur_dir_B, "data", "markers", "thief.svg")
+        svg_style_terrorist_B = dict()
+        svg_style_terrorist_B['name'] = terrorist_marker_B
+        svg_style_terrorist_B['size'] = '5'
 
+        guns_marker_B = os.path.join(cur_dir_B, "data", "markers", "guns.svg")
+        svg_style_guns_B = dict()
+        svg_style_guns_B['name'] = guns_marker_B
+        svg_style_guns_B['size'] = '16'
+
+        hostage_marker_B = os.path.join(cur_dir_B, "data", "markers", "hostage.svg")
+        svg_style_hostage_B = dict()
+        svg_style_hostage_B['name'] = hostage_marker_B
+        svg_style_hostage_B['size'] = '7.5'
+
+        symLyr1B = QgsMarkerSymbolV2.createSimple( {"color": "255,255,255", "color_border": "0,0,0", 'outline_width': '0.0', 'size': '0.3'})
+        symLyr1B.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_terrorist_B))
+
+        symLyr2B = QgsMarkerSymbolV2.createSimple({"color": "255,255,255", "outline": "255,255,255", 'outline_width': '0.0', 'size': '0.3'})
+        symLyr2B.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_guns_B))
+
+        symLyr3B = QgsMarkerSymbolV2.createSimple( {"color": "255,255,255", "outline": "255,255,255", 'outline_width': '0.0', 'size': '0.3'})
+        symLyr3B.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_hostage_B))
+
+        # create renderer object
+        fniB = infoB.fieldNameIndex('PK_UID')
+        unique_valuesB = infoB.dataProvider().uniqueValues(fniB)
+        print unique_values
+        category1B = QgsRendererCategoryV2(str(unique_valuesB[0]), symLyr1B, str(unique_valuesB[0]))
+        category2B = QgsRendererCategoryV2(str(unique_valuesB[1]), symLyr2B, str(unique_valuesB[1]))
+        category3B = QgsRendererCategoryV2(str(unique_valuesB[2]), symLyr3B, str(unique_valuesB[2]))
+
+        # entry for the list of category items
+        categoriesB = []
+        categoriesB.append(category1B)
+        categoriesB.append(category2B)
+        categoriesB.append(category3B)
+        rendererB = QgsCategorizedSymbolRendererV2('PK_UID', categoriesB)
+        infoB.setRendererV2(rendererB)
 
     def fix(self):
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
@@ -195,40 +235,24 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def setIncident(self):
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
-        #print layer_name
         if layer_name == "Incident_A":
 
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), True)
-
-            #Insert Accident Information???
-            # layer_test = uf.getLegendLayerByName(self.iface, layer_name)
-            # feature= layer_test.getFeatures().next()
-
-            # feature2 = self.layer_dic.get("Incident_A").getFeatures().next()
-            # print feature2
-            #
-            # #self.reportList.insertItem(0, item)
-            # # featurelist = []
-            # # for i in range(1, 2):
-            # #     featurelist.append(feature[i])
-            # #     print featurelist
-            #
-            # #fields = uf.get(self.layer_dic.get("Incident_A"))
-            # self.ReportInformation.clear()
-            # self.ReportInformation.addItems(feature)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), False)
 
         elif layer_name == "Incident_B":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), False)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), True)
 
         elif layer_name == "-":
-            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
-            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
-            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), False)
-
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"),True)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), True)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), True)
 
 
     # buffer functions

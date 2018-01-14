@@ -91,7 +91,7 @@
      <attribute name="title">
       <string>Incident Information</string>
      </attribute>
-     <widget class="QPushButton" name="openScenario">
+     <widget class="QPushButton" name="loadSituation">
       <property name="geometry">
        <rect>
         <x>0</x>
