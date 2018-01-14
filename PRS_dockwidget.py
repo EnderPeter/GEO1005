@@ -198,18 +198,16 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #print layer_name
         if layer_name == "Incident_A":
 
-
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), True)
 
+            #Insert Accident Information???
             # layer_test = uf.getLegendLayerByName(self.iface, layer_name)
             # feature= layer_test.getFeatures().next()
-            #
-            # print "sindic", feature
-            #
+
             # feature2 = self.layer_dic.get("Incident_A").getFeatures().next()
             # print feature2
-            #
             #
             # #self.reportList.insertItem(0, item)
             # # featurelist = []
@@ -224,6 +222,14 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         elif layer_name == "Incident_B":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), False)
+
+        elif layer_name == "-":
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
+            self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), False)
+
+
 
     # buffer functions
     def getBufferCutoff(self):
