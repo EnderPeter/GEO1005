@@ -107,6 +107,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.load_layer_from_db("Study_area", "study_area.qml")
         self.load_layer_from_db("RoadNetwork", "road_network.qml")
         self.load_layer_from_db("Police_stations_area", "police_station.qml")
+        #self.load_layer_from_db("Police_stations_info", "police_station_info.qml")
         self.load_layer_from_db("Buffer_A", "buffer_a.qml")
         self.load_layer_from_db("Buffer_B", "buffer_b.qml")
         self.load_layer_from_db("info_A", "info_A.qml")
@@ -353,6 +354,11 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.layer_dic.get("RoadNetwork").setSelectedFeatures(ids1+ids2)
 
     def run_shortest_path(self):
+
+        #load information from police stations
+        self.load_layer_from_db("Police_stations_info", "police_station_info.qml")
+
+        #origin and destinations
         orig = ["\"PK_UID\"=6482","\"PK_UID\"=7505","\"PK_UID\"=6661", "\"PK_UID\"=6618","\"PK_UID\"=5368","\"PK_UID\"=1112"]
         dest = "\"PK_UID\"=6520"
         lengths = []
