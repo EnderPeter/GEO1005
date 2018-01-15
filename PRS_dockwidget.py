@@ -296,17 +296,20 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.intersection_button.setEnabled(True)
 
         #clean Buffer
+
         if(len(self.danger_zones)>0):
             for buffer in self.danger_zones:
                 QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
             self.danger_zones = []
 
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
+
         layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
         origins = layer.getFeatures()
 
         #origins = self.getSelectedLayer().selectedFeatures()
         #layer = self.getSelectedLayer()
+
         if origins > 0:
             cutoff_distance = self.getBufferCutoff()
             buffers = {}
@@ -372,9 +375,9 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     ###### Shortest Path
     def select_origins_and_dest(self,orig,dest):
         ps1_road_id = QgsExpression(orig)
-        incident_a_road_id = QgsExpression(dest)
+        incident_road_id = QgsExpression(dest)
         it = self.layer_dic.get("RoadNetwork").getFeatures(QgsFeatureRequest(ps1_road_id))
-        it2 = self.layer_dic.get("RoadNetwork").getFeatures(QgsFeatureRequest(incident_a_road_id))
+        it2 = self.layer_dic.get("RoadNetwork").getFeatures(QgsFeatureRequest(incident_road_id))
         ids1 = [i.id() for i in it]
         ids2 = [i.id() for i in it2]
         self.layer_dic.get("RoadNetwork").setSelectedFeatures(ids1+ids2)
@@ -389,9 +392,17 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         # self.selected_layer = layer_name
 
         if layer_name == "Incident_A":
+
+            routes_layerA= uf.getLegendLayerByName(self.iface, "Routes")
+            if routes_layerA:
+                QgsMapLayerRegistry.instance().removeMapLayer(routes_layerA.id())
             dest = "\"PK_UID\"=6520"
+
         elif layer_name == "Incident_B":
-            dest=  "\"PK_UID\"=2782"
+            routes_layerB = uf.getLegendLayerByName(self.iface, "Routes")
+            if routes_layerB:
+                QgsMapLayerRegistry.instance().removeMapLayer(routes_layerB.id())
+                dest=  "\"PK_UID\"=2782"
 
              #origin and destinations
         orig = ["\"PK_UID\"=6482","\"PK_UID\"=7505","\"PK_UID\"=6661", "\"PK_UID\"=6618","\"PK_UID\"=5368","\"PK_UID\"=1112"]
