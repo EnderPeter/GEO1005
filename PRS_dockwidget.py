@@ -43,13 +43,11 @@ import random
 FORM_CLASS, _ = uic.loadUiType(os.path.join(
     os.path.dirname(__file__), 'PRS_dockwidget_base.ui'))
 
-
 class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
-
-
 
     closingPlugin = pyqtSignal()
     layer_dic=dict()
+    police_station_id = dict()
     danger_zones=[]
     selected_Incident = "-"
     #selected_layer="Incident_A"
@@ -86,21 +84,33 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.shortestPath.clicked.connect(self.run_shortest_path)
         self.intersection_button.clicked.connect(self.intersection_block)
 
+        #Shortest path table signals
+        self.shortestPathTable.itemClicked.connect(self.selection_shortest_path_table)
+
+        '''Ioanna CODE'''
+        #Decision Tab
+        self.PoliceStationButton.clicked.connect(self.SelectPoliceStation)
+        self.ShowInformationButton.clicked.connect(self.ShowInformation)
+        '''Ioanna CODE EDS'''
 
         #remove layers
         self.clear_points.clicked.connect(self.clean)
 
         self.graph = QgsGraph()
         self.tied_points = []
-        self.resultTextEdit.clear()
+        self.shortestPathTable.clear()
 
 
     def closeEvent(self, event):
         self.closingPlugin.emit()
-        self.resultTextEdit.clear()
+        self.shortestPathTable.clear()
         event.accept()
 
     def load_situation(self):
+
+        self.comboIncident.setEnabled(True)
+        osm = uf.getLegendLayerByName(self.iface, "OSM")
+        self.iface.legendInterface().setLayerVisible(osm, True)
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
         self.iface.mapCanvas().refresh()
 
@@ -234,14 +244,31 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.canvas.refresh()
 
     def setIncident(self):
+
+        self.bufferCutoffEdit.setEnabled(True)
+        self.buffer_zone.setEnabled(True)
+        self.shortestPath.setEnabled(True)
+        self.ReportInformation.setEnabled(True)
+
+
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
+        print layer_name
         if layer_name == "Incident_A":
 
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), False)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), False)
+
+
+            '''feature = self.layer_dic.get("Incident_A").getFeatures().next()'''
+
+            #data = [1,2,3]
+            '''[feature.attribute("id"),feature.attribute("PK_UID")]'''
+
+            self.ReportInformation.clear()
+            self.ReportInformation.addItems("5")
 
         elif layer_name == "Incident_B":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
@@ -264,13 +291,15 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         else:
             return 0
 
-
     def calculateBuffer(self):
 
+        self.intersection_button.setEnabled(True)
+
         #clean Buffer
-        for buffer in self.danger_zones:
-            QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
-        self.danger_zones = []
+        if(len(self.danger_zones)>0):
+            for buffer in self.danger_zones:
+                QgsMapLayerRegistry.instance().removeMapLayer(buffer.id())
+            self.danger_zones = []
 
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
         layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
@@ -296,7 +325,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 buffer_layer = uf.createTempLayer('Buffers','POLYGON',layer.crs().postgisSrid(), attribs, types)
                 buffer_layer.setLayerTransparency(55)
 
-                ###Colorif layer_name ==incien_a use color xx xx
+                ###Colorif layer_name ==incident use color xx xx
                 symbols = buffer_layer.rendererV2().symbols()
                 symbol = symbols[0]
                 symbol.setColor(QColor.fromRgb(255, 255, 50))
@@ -328,8 +357,10 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     ###### Block Points
 
     def intersection_block(self):
+        self.clear_points.setEnabled(True)
         processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
         processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None, 'memory:Intersections')
+
 
     def clean (self):
         lines_polygons_layer = uf.getLegendLayerByName(self.iface, "Lines from polygons")
@@ -370,7 +401,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.buildNetwork();
             self.calculateRoute(i);
             lengths.append(self.calculate_length(i+1))
-        self.resultTextEdit.clear()
+        self.shortestPathTable.clear()
         #lenghts by tab
         textBox = dict()
         textBox["Zeehaven (ZH)        "] =  lengths[0]
@@ -380,14 +411,21 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         textBox["Targer Water (TW)    "] = lengths[4]
         textBox["Tabor Street (TS)    "] = lengths[5]
 
+        #police station attrib ids
+        self.police_station_id["Zeehaven (ZH)"] = 0
+        self.police_station_id["Zuidplein (ZP)"] = 1
+        self.police_station_id["Boezemsingel (BZ)"] = 2
+        self.police_station_id["Marconiplein (MP)"] = 3
+        self.police_station_id["Targer Water (TW)"] = 4
+        self.police_station_id["Tabor Street (TS)"] = 5
+
         #sort by near police station
         format_results = ""
+        self.init_shortestPathTable()
+        count = 0
         for key, value in sorted(textBox.iteritems(), key=lambda (k,v): (v,k)):
-            self.resultTextEdit.insertPlainText(key)
-            self.resultTextEdit.insertPlainText("    ")
-            self.resultTextEdit.insertPlainText(str(round(textBox[key]/1000.0, 2))+" km")
-            self.resultTextEdit.insertPlainText("\n")
-            self.resultTextEdit.insertPlainText("\n")
+            self.populate_shortestPathTable(count,key, str(round(textBox[key]/1000.0, 2))+" km")
+            count = count + 1
         #self.resultTextEdit.insertPlainText(format_results)
 
         # Function to calculate length of all shortest path, one thing to notice: If there're more than one path to calculate length, length should be a list, not a variable.
@@ -455,6 +493,13 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 types = [QtCore.QVariant.String]
                 routes_layer = uf.createTempLayer('Routes', 'LINESTRING', self.network_layer.crs().postgisSrid(),
                                                   attribs, types)
+
+                symbols = routes_layer.rendererV2().symbols()
+                symbol = symbols[0]
+                symbol.setWidth(0.8)
+                symbol.setColor(QColor.fromRgb(15, 152, 9))
+
+
                 uf.loadTempLayer(routes_layer)
                 #routes_layer.setProperty()
             # insert route line
@@ -464,4 +509,81 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
             #buffer = processing.runandload('qgis:fixeddistancebuffer', routes_layer, 10.0, 5, False, None)
             self.refreshCanvas(routes_layer)
+
+    def init_shortestPathTable(self):
+        self.shortestPathTable.clear()
+        self.shortestPathTable.setColumnCount(2)
+        self.shortestPathTable.setHorizontalHeaderLabels(["Police Station", "Distance"])
+        self.shortestPathTable.setRowCount(6)
+
+    def populate_shortestPathTable(self,item_number,station,distance):
+        self.shortestPathTable.setItem(item_number, 0, QtGui.QTableWidgetItem(unicode(station)))
+        self.shortestPathTable.setItem(item_number, 1, QtGui.QTableWidgetItem(unicode(distance)))
+
+    def selection_shortest_path_table(self):
+        #for currentQTableWidgetItem in self.shortestPathTable.selectedItems():
+        #    print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
+        if(len(self.shortestPathTable.selectedItems()) == 1 ):
+            key = self.shortestPathTable.selectedItems()[0].text().encode('ascii', 'ignore').strip()
+            if(self.police_station_id.has_key(key)):
+                id = self.police_station_id[key]
+                layer = uf.getLegendLayerByName(self.iface,"Routes")
+                selection = layer.getFeatures(QgsFeatureRequest().setFilterExpression( unicode("id="+str(id))))
+                for k in selection:
+                    print k
+                    layer.setSelectedFeatures([k.id()])
+                # features = layer.getFeatures()
+                # for feat in features:
+                #     attrs = feat.attributes()
+                #     if(attrs[0] == id):
+                #
+                #         attrs = feat.attributes()
+                #         print attrs[0]
+                #         print attrs[1]
+                #     else:
+                #         print "removing width"
+                # for feature in layer.getFeatures():
+                #         name = feature["id"]
+
+
+    def SelectPoliceStation(self):
+        self.ShowInformationButton.setEnabled(True)
+        layer=uf.getLegendLayerByName(self.iface, "Police_stations_area")
+        self.iface.setActiveLayer(layer)
+        self.iface.actionSelect().trigger()
+        #set police layer as working layer
+
+
+    def ShowInformation(self):
+
+
+        Policelayer = uf.getLegendLayerByName(self.iface, "Police_stations_area")
+        selected_feature=Policelayer.selectedFeatures()#returns a list object with the feature objects
+        if(len(selected_feature)>0):
+            feature=selected_feature[0]#get the feature object
+            #tuple with the data (",",",")
+            PoliceData=(feature.attribute("name"),feature.attribute("n_vehicle"),feature.attribute("n_officer"),feature.attribute("equipment"))
+            self.clearTable()
+            self.updateTable(PoliceData)
+
+
+    def updateTable(self,values):
+        #take a tuple with the values of one feature
+        self.PoliceTable.setColumnCount(4)
+        self.PoliceTable.setHorizontalHeaderLabels(["name","vehicles","officers","equipments"])
+        self.PoliceTable.setRowCount(1)
+
+            #item must be added as QTableWidgetItems
+        self.PoliceTable.setItem(0,0,QtGui.QTableWidgetItem(unicode(values[0])))
+        self.PoliceTable.setItem(0,1,QtGui.QTableWidgetItem(unicode(values[1])))
+        self.PoliceTable.setItem(0,2,QtGui.QTableWidgetItem(unicode(values[2])))
+        self.PoliceTable.setItem(0,3,QtGui.QTableWidgetItem(unicode(values[3])))
+
+        '''self.PoliceTable.horizontalHeader().setResizeMode(0,QtQui.QHeaderView.Strech)
+        self.PoliceTable.horizontalHeader().setResizeMode(1,QtQui.QHeaderView.Strech)
+        self.PoliceTable.horizontalHeader().setResizeMode(2,QtQui.QHeaderView.Strech)
+        self.PoliceTable.horizontalHeader().setResizeMode(3,QtQui.QHeaderView.Strech)'''
+
+    def clearTable(self):
+        self.PoliceTable.clear()
 

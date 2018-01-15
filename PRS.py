@@ -27,6 +27,7 @@ from osgeo import gdal
 from qgis._core import QgsMapLayerRegistry, QgsDataSourceURI, QgsRectangle, QgsVectorLayer
 
 import resources
+from . import utility_functions as uf
 
 # Import the code for the DockWidget
 from PRS_dockwidget import PRS_PoliceResponseSystemDockWidget
@@ -185,9 +186,10 @@ class PRS_PoliceResponseSystem:
         #print "** CLOSING PRS_PoliceResponseSystem"
         QgsMapLayerRegistry.instance().removeAllMapLayers()
         # disconnects
-        self.dockwidget.resultTextEdit.clear()
-        self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
 
+        self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
+        self.dockwidget.shortestPathTable.clear()
+        self.dockwidget.PoliceTable.clear()
         # remove this statement if dockwidget is to remain
         # for reuse if plugin is reopened
         # Commented next statement since it causes QGIS crashe
@@ -239,4 +241,6 @@ class PRS_PoliceResponseSystem:
             gdal.FileFromMemBuffer(filename, "xml")
             rasterLyr = self.iface.addRasterLayer(filename, "OSM")
             QgsMapLayerRegistry.instance().addMapLayers([rasterLyr])
+            osm = uf.getLegendLayerByName(self.iface, "OSM")
+            self.iface.legendInterface().setLayerVisible(osm, False)
             self.dockwidget.show()
