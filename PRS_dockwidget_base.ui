@@ -88,7 +88,7 @@
      </size>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="QWidget" name="tab">
      <attribute name="title">
@@ -96,14 +96,14 @@
      </attribute>
      <widget class="QListWidget" name="ReportInformation">
       <property name="enabled">
-       <bool>false</bool>
+       <bool>true</bool>
       </property>
       <property name="geometry">
        <rect>
         <x>-1</x>
-        <y>-2</y>
+        <y>2</y>
         <width>391</width>
-        <height>421</height>
+        <height>411</height>
        </rect>
       </property>
      </widget>
@@ -332,7 +332,7 @@
        <string>Officers</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="bufferCutoffEdit_2">
+     <widget class="QLineEdit" name="officers">
       <property name="geometry">
        <rect>
         <x>270</x>
@@ -358,7 +358,7 @@
        <string>Vehicles</string>
       </property>
      </widget>
-     <widget class="QLineEdit" name="bufferCutoffEdit_3">
+     <widget class="QLineEdit" name="vehicles">
       <property name="geometry">
        <rect>
         <x>66</x>
@@ -371,7 +371,7 @@
        <string/>
       </property>
      </widget>
-     <widget class="QPushButton" name="bufferButton_3">
+     <widget class="QPushButton" name="deployTeam">
       <property name="geometry">
        <rect>
         <x>110</x>
@@ -454,10 +454,10 @@
      </widget>
      <zorder>PoliceTable</zorder>
      <zorder>label_3</zorder>
-     <zorder>bufferCutoffEdit_2</zorder>
+     <zorder>officers</zorder>
      <zorder>label_4</zorder>
-     <zorder>bufferCutoffEdit_3</zorder>
-     <zorder>bufferButton_3</zorder>
+     <zorder>vehicles</zorder>
+     <zorder>deployTeam</zorder>
      <zorder>shortestPath</zorder>
      <zorder>PoliceStationButton</zorder>
      <zorder>ShowInformationButton</zorder>

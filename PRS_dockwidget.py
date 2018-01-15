@@ -87,11 +87,10 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #Shortest path table signals
         self.shortestPathTable.itemClicked.connect(self.selection_shortest_path_table)
 
-        '''Ioanna CODE'''
         #Decision Tab
         self.PoliceStationButton.clicked.connect(self.SelectPoliceStation)
         self.ShowInformationButton.clicked.connect(self.ShowInformation)
-        '''Ioanna CODE EDS'''
+        self.deployTeam.clicked.connect(self.final_report)
 
         #remove layers
         self.clear_points.clicked.connect(self.clean)
@@ -100,13 +99,13 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.tied_points = []
         self.shortestPathTable.clear()
 
-
     def closeEvent(self, event):
 
         self.closingPlugin.emit()
         self.shortestPathTable.clear()
         self.shortestPathTable.clear()
         self.PoliceTable.clear()
+        self.ReportInformation.clear()
         event.accept()
 
     def load_situation(self):
@@ -114,9 +113,12 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.comboIncident.setEnabled(True)
         osm = uf.getLegendLayerByName(self.iface, "OSM")
         self.iface.legendInterface().setLayerVisible(osm, True)
+
+        #zoon to Layer
         self.iface.mapCanvas().setExtent(QgsRectangle(491948.924266, 6779060, 504837, 6787990))
         self.iface.mapCanvas().refresh()
 
+        #loading layers from spatialite database
         self.load_layer_from_db("Study_area", "study_area.qml")
         self.load_layer_from_db("RoadNetwork", "road_network.qml")
         self.load_layer_from_db("Police_stations_area", "police_station.qml")
@@ -134,8 +136,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.comboIncident.addItem("Incident_B")
 
         #Add SVG Markers
-        #Incident_A
-
         infoA = uf.getLegendLayerByName(self.iface,"info_A")
         infoB= uf.getLegendLayerByName(self.iface,"info_B")
         layer_svg = [infoA,infoB]
@@ -164,16 +164,16 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             symLyr3 = QgsMarkerSymbolV2.createSimple({"color" : "255,255,255","outline" :"255,255,255",'outline_width': '0.0','size': '0.3'})
             symLyr3.appendSymbolLayer(QgsSvgMarkerSymbolLayerV2.create(svg_style_hostage))
 
-        # create renderer object
+            # create renderer object
             fni = item.fieldNameIndex('PK_UID')
             unique_values = item.dataProvider().uniqueValues(fni)
 
-        # print unique_values
+           # print unique_values
             category1 = QgsRendererCategoryV2(str(unique_values[0]), symLyr1, str(unique_values[0]))
             category2 = QgsRendererCategoryV2(str(unique_values[1]), symLyr2, str(unique_values[1]))
             category3 = QgsRendererCategoryV2(str(unique_values[2]), symLyr3, str(unique_values[2]))
 
-        # entry for the list of category items
+            # entry for the list of category items
             categories=[]
             categories.append(category1)
             categories.append(category2)
@@ -187,6 +187,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
 
     def load_layer_from_db(self, layer_name,style_name):
+        #load layers from spatialite database
         uri = QgsDataSourceURI()
         cur_dir = os.path.dirname(os.path.realpath(__file__))
         filename = os.path.join(cur_dir, "data", "db.sqlite")
@@ -209,13 +210,10 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.canvas.refresh()
 
     def setIncident(self):
-
         self.bufferCutoffEdit.setEnabled(True)
         self.buffer_zone.setEnabled(True)
         self.shortestPath.setEnabled(True)
         self.ReportInformation.setEnabled(True)
-
-
         layer_name = self.comboIncident.currentText()
         self.selected_layer = layer_name
         print layer_name
@@ -227,19 +225,38 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), False)
 
 
-            '''feature = self.layer_dic.get("Incident_A").getFeatures().next()'''
-
-            #data = [1,2,3]
-            '''[feature.attribute("id"),feature.attribute("PK_UID")]'''
-
+            feature = self.layer_dic.get("Incident_A").getFeatures().next()
+            report = [("\nLevel of Threat (LOT) : {0}".format(feature.attribute("LOT"))),
+                      ("Location : {0}".format(feature.attribute("Location"))),
+                      ("Address : {0}".format(feature.attribute("Address"))),
+                      ("Timestamp : {0}".format(feature.attribute("Timestamp"))),
+                      ("Attackers : {0}".format(feature.attribute("Attackers"))),
+                      ("Weapons : {0}".format(feature.attribute("Weapons"))),
+                      ("Casualties : {0}".format(feature.attribute("Casualties"))),
+                      ("Radius : {0}".format(feature.attribute("Radius"))),
+                      ("Link : {0}".format(feature.attribute("Link")))]
             self.ReportInformation.clear()
-            self.ReportInformation.addItems("5")
+            self.ReportInformation.addItems(report)
+
 
         elif layer_name == "Incident_B":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_A"), False)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), False)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), True)
+
+            feature = self.layer_dic.get("Incident_B").getFeatures().next()
+            report = [("\nLevel of Threat (LOT) : {0}".format(feature.attribute("LOT"))),
+                      ("Location : {0}".format(feature.attribute("Location"))),
+                      ("Address : {0}".format(feature.attribute("Adress"))),
+                      ("Timestamp : {0}".format(feature.attribute("Timestamp"))),
+                      ("Attackers : {0}".format(feature.attribute("Attackers"))),
+                      ("Weapons : {0}".format(feature.attribute("Weapons"))),
+                      ("Casualties : {0}".format(feature.attribute("Casualties"))),
+                      ("Radius : {0}".format(feature.attribute("Radius"))),
+                      ("Link : {0}".format(feature.attribute("Link")))]
+            self.ReportInformation.clear()
+            self.ReportInformation.addItems(report)
 
         elif layer_name == "-":
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("Buffer_B"),True)
@@ -267,7 +284,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.danger_zones = []
 
         #layer = uf.getLegendLayerByName(self.iface, "Incident_A")
-
         layer = uf.getLegendLayerByName(self.iface, self.selected_layer)
         origins = layer.getFeatures()
 
@@ -318,20 +334,17 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.textDanger = layer_name
 
 
-    ###### Block Points
-
+    ###### Roads Block Points
     def intersection_block(self):
         self.clear_points.setEnabled(True)
         processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
         processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None, 'memory:Intersections')
-
 
     def clean (self):
         lines_polygons_layer = uf.getLegendLayerByName(self.iface, "Lines from polygons")
         intersection_layer = uf.getLegendLayerByName(self.iface, "Intersections")
         QgsMapLayerRegistry.instance().removeMapLayer(intersection_layer.id())
         QgsMapLayerRegistry.instance().removeMapLayer(lines_polygons_layer.id())
-
 
     ###### Shortest Path
     def select_origins_and_dest(self,orig,dest):
@@ -344,25 +357,23 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.layer_dic.get("RoadNetwork").setSelectedFeatures(ids1+ids2)
 
     def run_shortest_path(self,dest):
-
         # load information from police stations
-        self.load_layer_from_db("Police_stations_info", "police_station_info.qml")
-        layer_name = self.comboIncident.currentText()
-        #
-        # routes_layer = uf.getLegendLayerByName(self.iface, "Routes")
-        # self.selected_layer = layer_name
+        layer_shortest = uf.getLegendLayerByName(self.iface, "Police_stations_info")
 
+        if not layer_shortest:
+            self.load_layer_from_db("Police_stations_info", "police_station_info.qml")
+
+        routes_layer = uf.getLegendLayerByName(self.iface, "Routes")
+        layer_name = self.comboIncident.currentText()
         if layer_name == "Incident_A":
-            routes_layerA= uf.getLegendLayerByName(self.iface, "Routes")
-            if routes_layerA:
-                QgsMapLayerRegistry.instance().removeMapLayer(routes_layerA.id())
+            if routes_layer:
+                QgsMapLayerRegistry.instance().removeMapLayer(routes_layer.id())
             dest = "\"PK_UID\"=6520"
 
-        elif layer_name == "Incident_B":
-            routes_layerB = uf.getLegendLayerByName(self.iface, "Routes")
-            if routes_layerB:
-                QgsMapLayerRegistry.instance().removeMapLayer(routes_layerB.id())
-                dest=  "\"PK_UID\"=2782"
+        else:
+            if routes_layer:
+                QgsMapLayerRegistry.instance().removeMapLayer(routes_layer.id())
+            dest=  "\"PK_UID\"=2782"
 
              #origin and destinations
         orig = ["\"PK_UID\"=6482","\"PK_UID\"=7505","\"PK_UID\"=6661", "\"PK_UID\"=6618","\"PK_UID\"=5368","\"PK_UID\"=1112"]
@@ -427,6 +438,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
     def buildNetwork(self):
 
+
         self.network_layer = self.getNetwork()
         if self.network_layer:
             # get the points to be used as origin and destination
@@ -468,64 +480,44 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
                 symbol = symbols[0]
                 symbol.setWidth(0.8)
                 symbol.setColor(QColor.fromRgb(15, 152, 9))
-
-
                 uf.loadTempLayer(routes_layer)
-                #routes_layer.setProperty()
-            # insert route line
- #           for route in routes_layer.getFeatures():
- #               print route.id()
             uf.insertTempFeatures(routes_layer, [path], [[name_feature, 100.00]])
-
             #buffer = processing.runandload('qgis:fixeddistancebuffer', routes_layer, 10.0, 5, False, None)
             self.refreshCanvas(routes_layer)
 
+    #create routes legths table
     def init_shortestPathTable(self):
         self.shortestPathTable.clear()
         self.shortestPathTable.setColumnCount(2)
         self.shortestPathTable.setHorizontalHeaderLabels(["Police Station", "Distance"])
         self.shortestPathTable.setRowCount(6)
 
+    #populate routes legths table
     def populate_shortestPathTable(self,item_number,station,distance):
         self.shortestPathTable.setItem(item_number, 0, QtGui.QTableWidgetItem(unicode(station)))
         self.shortestPathTable.setItem(item_number, 1, QtGui.QTableWidgetItem(unicode(distance)))
 
     def selection_shortest_path_table(self):
-        #for currentQTableWidgetItem in self.shortestPathTable.selectedItems():
-        #    print(currentQTableWidgetItem.row(), currentQTableWidgetItem.column(), currentQTableWidgetItem.text())
-        if(len(self.shortestPathTable.selectedItems()) == 1 ):
+
+        if len(self.shortestPathTable.selectedItems()) == 1 :
             key = self.shortestPathTable.selectedItems()[0].text().encode('ascii', 'ignore').strip()
-            if(self.police_station_id.has_key(key)):
+            if self.police_station_id.has_key(key):
                 id = self.police_station_id[key]
                 layer = uf.getLegendLayerByName(self.iface,"Routes")
                 selection = layer.getFeatures(QgsFeatureRequest().setFilterExpression( unicode("id="+str(id))))
                 for k in selection:
                     print k
                     layer.setSelectedFeatures([k.id()])
-                # features = layer.getFeatures()
-                # for feat in features:
-                #     attrs = feat.attributes()
-                #     if(attrs[0] == id):
-                #
-                #         attrs = feat.attributes()
-                #         print attrs[0]
-                #         print attrs[1]
-                #     else:
-                #         print "removing width"
-                # for feature in layer.getFeatures():
-                #         name = feature["id"]
-
 
     def SelectPoliceStation(self):
         self.ShowInformationButton.setEnabled(True)
         layer=uf.getLegendLayerByName(self.iface, "Police_stations_area")
         self.iface.setActiveLayer(layer)
         self.iface.actionSelect().trigger()
+
         #set police layer as working layer
 
-
     def ShowInformation(self):
-
 
         Policelayer = uf.getLegendLayerByName(self.iface, "Police_stations_area")
         selected_feature=Policelayer.selectedFeatures()#returns a list object with the feature objects
@@ -557,4 +549,15 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def clearTable(self):
         self.PoliceTable.clear()
 
+    def getvehicles(self):
+        cutoff_vehicles = self.vehicles.text()
+        if uf.isNumeric(cutoff_vehicles):
+            return uf.convertNumeric(cutoff_vehicles)
+        else:
+            return 0
 
+    def final_report(self):
+        vehicles = []
+        report_vehicles =  self.getvehicles()
+        vehicles.append(report_vehicles)
+        print vehicles
