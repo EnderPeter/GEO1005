@@ -162,18 +162,18 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         layer_svg = [infoA,infoB]
 
         for item in  layer_svg:
-            cur_dir_A = os.path.dirname(os.path.realpath(__file__))
-            terrorist_marker = os.path.join(cur_dir_A, "data", "markers", "thief.svg")
+            cur_dir = os.path.dirname(os.path.realpath(__file__))
+            terrorist_marker = os.path.join(cur_dir, "data", "markers", "thief.svg")
             svg_style_terrorist = dict()
             svg_style_terrorist['name']=terrorist_marker
             svg_style_terrorist['size']='5'
 
-            guns_marker = os.path.join(cur_dir_A, "data", "markers", "guns.svg")
+            guns_marker = os.path.join(cur_dir, "data", "markers", "guns.svg")
             svg_style_guns = dict()
             svg_style_guns['name'] = guns_marker
             svg_style_guns['size'] = '16'
 
-            hostage_marker = os.path.join(cur_dir_A, "data", "markers", "hostage.svg")
+            hostage_marker = os.path.join(cur_dir, "data", "markers", "hostage.svg")
             svg_style_hostage = dict()
             svg_style_hostage['name'] = hostage_marker
             svg_style_hostage['size'] = '7.5'
