@@ -108,27 +108,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.shortestPathTable.clear()
         self.PoliceTable.clear()
         event.accept()
-        # try:
-        #     self.iface.projectRead.disconnect(self.updateLayers)
-        #     self.iface.newProjectCreated.disconnect(self.updateLayers)
-        #     self.iface.legendInterface().itemRemoved.disconnect(self.updateLayers)
-        #     self.iface.legendInterface().itemAdded.disconnect(self.updateLayers)
-        # except:
-        #     pass
-        #
-        # self.closingPlugin.emit()
-        # event.accept()
-    #
-    # def updateLayers(self):
-    #     layers = uf.getLegendLayers(self.iface, 'all', 'all')
-    #     self.selectLayerCombo.clear()
-    #     if layers:
-    #         layer_names = uf.getLayersListNames(layers)
-    #         self.selectLayerCombo.addItems(layer_names)
-    #         self.setSelectedLayer()
-    #     else:
-    #         self.selectAttributeCombo.clear()
-    #         self.clearChart()
 
     def load_situation(self):
 
