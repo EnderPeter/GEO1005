@@ -190,6 +190,7 @@ class PRS_PoliceResponseSystem:
         self.dockwidget.closingPlugin.disconnect(self.onClosePlugin)
         self.dockwidget.shortestPathTable.clear()
         self.dockwidget.PoliceTable.clear()
+
         # remove this statement if dockwidget is to remain
         # for reuse if plugin is reopened
         # Commented next statement since it causes QGIS crashe
