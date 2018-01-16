@@ -10,14 +10,17 @@
     <x>0</x>
     <y>0</y>
     <width>411</width>
-    <height>554</height>
+    <height>611</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
     <width>411</width>
-    <height>555</height>
+    <height>611</height>
    </size>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <property name="windowTitle">
    <string>PRS_PoliceResponseSystem</string>
@@ -78,7 +81,7 @@
       <x>10</x>
       <y>50</y>
       <width>391</width>
-      <height>481</height>
+      <height>500</height>
      </rect>
     </property>
     <property name="maximumSize">
@@ -103,7 +106,7 @@
         <x>-1</x>
         <y>2</y>
         <width>391</width>
-        <height>411</height>
+        <height>441</height>
        </rect>
       </property>
      </widget>
@@ -113,8 +116,8 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>0</x>
-        <y>424</y>
+        <x>-2</x>
+        <y>450</y>
         <width>391</width>
         <height>28</height>
        </rect>
@@ -149,7 +152,7 @@
       </property>
       <property name="geometry">
        <rect>
-        <x>180</x>
+        <x>184</x>
         <y>20</y>
         <width>71</width>
         <height>22</height>
@@ -168,8 +171,8 @@
      <widget class="QLabel" name="label_2">
       <property name="geometry">
        <rect>
-        <x>38</x>
-        <y>25</y>
+        <x>3</x>
+        <y>24</y>
         <width>151</width>
         <height>16</height>
        </rect>
@@ -269,27 +272,11 @@
        <string>Update Zone</string>
       </property>
      </widget>
-     <widget class="QPlainTextEdit" name="GPSBlockedpoints">
-      <property name="enabled">
-       <bool>true</bool>
-      </property>
-      <property name="geometry">
-       <rect>
-        <x>2</x>
-        <y>112</y>
-        <width>381</width>
-        <height>311</height>
-       </rect>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
      <widget class="QPushButton" name="fixPosition">
       <property name="geometry">
        <rect>
-        <x>1</x>
-        <y>433</y>
+        <x>0</x>
+        <y>452</y>
         <width>71</width>
         <height>23</height>
        </rect>
@@ -312,6 +299,16 @@
       </property>
       <property name="text">
        <string>Clear Points</string>
+      </property>
+     </widget>
+     <widget class="QTableWidget" name="roadblock_table">
+      <property name="geometry">
+       <rect>
+        <x>2</x>
+        <y>110</y>
+        <width>381</width>
+        <height>331</height>
+       </rect>
       </property>
      </widget>
     </widget>

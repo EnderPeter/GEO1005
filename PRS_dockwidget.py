@@ -53,7 +53,6 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     #selected_layer="Incident_A"
     textDanger= "-"
 
-
     def __init__(self, parent=None):
         """Constructor."""
         super(PRS_PoliceResponseSystemDockWidget, self).__init__(parent)
@@ -87,10 +86,13 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #Shortest path table signals
         self.shortestPathTable.itemClicked.connect(self.selection_shortest_path_table)
 
+        # roadblock_table signal
+        self.roadblock_table.itemClicked.connect(self.select_roadblock_table)
+
         #Decision Tab
         self.PoliceStationButton.clicked.connect(self.SelectPoliceStation)
         self.ShowInformationButton.clicked.connect(self.ShowInformation)
-        self.deployTeam.clicked.connect(self.final_report)
+        #self.deployTeam.clicked.connect(self.final_report)
 
         #remove layers
         self.clear_points.clicked.connect(self.clean)
@@ -340,11 +342,86 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
         processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None, 'memory:Intersections')
 
+
     def clean (self):
         lines_polygons_layer = uf.getLegendLayerByName(self.iface, "Lines from polygons")
         intersection_layer = uf.getLegendLayerByName(self.iface, "Intersections")
         QgsMapLayerRegistry.instance().removeMapLayer(intersection_layer.id())
         QgsMapLayerRegistry.instance().removeMapLayer(lines_polygons_layer.id())
+        self.roadblock_table.clear()
+
+    '''Line 340'''
+
+    ###### Roads Block Points
+    def intersection_block(self):
+        self.clear_points.setEnabled(True)
+        processing.runandload('qgis:polygonstolines', 'Danger_Zone', 'memory:Lines from polygons')
+        processing.runandload('qgis:lineintersections', 'Lines from polygons', 'RoadNetwork', None, None,
+                              'memory:Intersections')
+        self.addfield_xy()
+        self.calculate_coordinate()
+        roadblocks = self.save_coordinates()
+        count_roadblocks = len(roadblocks)
+        # initiate roadblocks table
+        self.roadblock_table.clear()
+        self.roadblock_table.setColumnCount(3)
+        self.roadblock_table.setHorizontalHeaderLabels(["id", "X", "Y"])
+        self.roadblock_table.setRowCount(count_roadblocks)
+        # populate roadblock table
+        for roadblock in roadblocks:
+            self.populate_roadblocktable(roadblock[0] - 1, roadblock[0], roadblock[1],
+                                         roadblock[2])  # -1, otherwise will start from second row
+
+    def populate_roadblocktable(self, item_number, id, X, Y):
+        self.roadblock_table.setItem(item_number, 0, QtGui.QTableWidgetItem(unicode(id)))
+        self.roadblock_table.setItem(item_number, 1, QtGui.QTableWidgetItem(unicode(X)))
+        self.roadblock_table.setItem(item_number, 2, QtGui.QTableWidgetItem(unicode(Y)))
+
+    ''' Xin's part. Function used to add field to a table'''
+
+    def addfield_xy(self):
+        layer = uf.getLegendLayerByName(self.iface, "Intersections")
+        names = ['id', 'X', 'Y']
+        types = [QVariant.Int, QVariant.String, QVariant.String]
+        uf.addFields(layer, names, types)
+
+    '''Function used to calculate coordinate of each road block'''
+
+    def calculate_coordinate(self):
+        layer = uf.getLegendLayerByName(self.iface, "Intersections")
+        name_id = 'id'
+        name_x = 'X'
+        name_y = 'Y'
+        expression_id = '$rownum'  # expression to get unique incremental id for each row (feature)
+        expression_x = '$x'
+        expression_y = '$y'
+        uf.updateField(layer, name_id, expression_id)
+        uf.updateField(layer, name_x, expression_x)
+        uf.updateField(layer, name_y, expression_y)
+
+    '''Function to save roadblocks' id and coordinates in variable'''
+
+    def save_coordinates(self):
+        layer = uf.getLegendLayerByName(self.iface, "Intersections")
+        field_x = 'X'
+        field_y = 'Y'
+        X_and_id = uf.getFieldValues(layer, field_x, null=True, selection=False)
+        Y_and_id = uf.getFieldValues(layer, field_y, null=True, selection=False)
+        id_and_coordinate = list(zip(X_and_id[1], X_and_id[0], Y_and_id[0]))
+        return id_and_coordinate
+
+    ''' Function used to select roadblocks in roadblock_table'''  # something wrong here, still working on that.
+
+    def select_roadblock_table(self):
+        if len(self.roadblock_table.selectedItems()) == 1:
+            id_qtable = self.roadblock_table.selectedItems()[0]
+            layer = uf.getLegendLayerByName(self.iface, "Intersections")
+            selection = []
+            for feature in layer.getFeatures():
+                if feature.attribute("id") == id_qtable:
+                    selection.append(feature.id())
+            layer.setSelectedFeatures(selection)
+
 
     ###### Shortest Path
     def select_origins_and_dest(self,orig,dest):
@@ -549,15 +626,3 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
     def clearTable(self):
         self.PoliceTable.clear()
 
-    def getvehicles(self):
-        cutoff_vehicles = self.vehicles.text()
-        if uf.isNumeric(cutoff_vehicles):
-            return uf.convertNumeric(cutoff_vehicles)
-        else:
-            return 0
-
-    def final_report(self):
-        vehicles = []
-        report_vehicles =  self.getvehicles()
-        vehicles.append(report_vehicles)
-        print vehicles
