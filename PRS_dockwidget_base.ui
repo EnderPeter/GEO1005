@@ -117,7 +117,7 @@
       <property name="geometry">
        <rect>
         <x>-2</x>
-        <y>450</y>
+        <y>446</y>
         <width>391</width>
         <height>28</height>
        </rect>
@@ -417,7 +417,7 @@
       <property name="geometry">
        <rect>
         <x>140</x>
-        <y>237</y>
+        <y>342</y>
         <width>101</width>
         <height>21</height>
        </rect>
@@ -430,23 +430,36 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>260</y>
+        <y>250</y>
         <width>381</width>
-        <height>101</height>
+        <height>91</height>
        </rect>
       </property>
      </widget>
      <widget class="QTableWidget" name="shortestPathTable">
       <property name="geometry">
        <rect>
-        <x>0</x>
+        <x>2</x>
         <y>40</y>
-        <width>391</width>
+        <width>381</width>
         <height>151</height>
        </rect>
       </property>
       <property name="selectionMode">
        <enum>QAbstractItemView::ExtendedSelection</enum>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="fixPosition2">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>452</y>
+        <width>71</width>
+        <height>23</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>zoom full</string>
       </property>
      </widget>
      <zorder>PoliceTable</zorder>
@@ -459,11 +472,35 @@
      <zorder>PoliceStationButton</zorder>
      <zorder>ShowInformationButton</zorder>
      <zorder>shortestPathTable</zorder>
+     <zorder>fixPosition2</zorder>
     </widget>
     <widget class="QWidget" name="tab_2">
      <attribute name="title">
       <string>Report</string>
      </attribute>
+     <widget class="QPlainTextEdit" name="ReportText">
+      <property name="geometry">
+       <rect>
+        <x>2</x>
+        <y>90</y>
+        <width>381</width>
+        <height>351</height>
+       </rect>
+      </property>
+     </widget>
+     <widget class="QPushButton" name="GenerateReportButton">
+      <property name="geometry">
+       <rect>
+        <x>230</x>
+        <y>40</y>
+        <width>93</width>
+        <height>28</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>GenerateReport</string>
+      </property>
+     </widget>
     </widget>
    </widget>
   </widget>

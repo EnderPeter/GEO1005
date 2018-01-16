@@ -27,7 +27,7 @@ from qgis.core import *
 from PyQt4 import QtGui, QtCore, uic
 from PyQt4.QtCore import pyqtSignal, Qt, QVariant
 from PyQt4.QtGui import QColor
-from Qt import QtCore
+#from Qt import QtCore
 from qgis._core import QgsRectangle, QgsProject
 from qgis._networkanalysis import QgsLineVectorLayerDirector, QgsDistanceArcProperter, QgsGraphBuilder, QgsGraphAnalyzer
 from qgis.utils import iface
@@ -76,6 +76,7 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         self.loadSituation.clicked.connect(self.load_situation)
         self.comboIncident.activated.connect(self.setIncident)
         self.fixPosition.clicked.connect(self.fix)
+        self.fixPosition2.clicked.connect(self.fix)
 
         #analysis
         #self.setNetworkButton.clicked.connect(self.buildNetwork)
@@ -92,7 +93,8 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
         #Decision Tab
         self.PoliceStationButton.clicked.connect(self.SelectPoliceStation)
         self.ShowInformationButton.clicked.connect(self.ShowInformation)
-        #self.deployTeam.clicked.connect(self.final_report)
+        self.deployTeam.clicked.connect(self.DeployTeam)
+        self.GenerateReportButton.clicked.connect(self.generatereport)
 
         #remove layers
         self.clear_points.clicked.connect(self.clean)
@@ -226,17 +228,18 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), True)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), False)
 
-
+            global report
+            report = []
             feature = self.layer_dic.get("Incident_A").getFeatures().next()
-            report = [("\nLevel of Threat (LOT) : {0}".format(feature.attribute("LOT"))),
-                      ("Location : {0}".format(feature.attribute("Location"))),
-                      ("Address : {0}".format(feature.attribute("Address"))),
-                      ("Timestamp : {0}".format(feature.attribute("Timestamp"))),
-                      ("Attackers : {0}".format(feature.attribute("Attackers"))),
-                      ("Weapons : {0}".format(feature.attribute("Weapons"))),
-                      ("Casualties : {0}".format(feature.attribute("Casualties"))),
-                      ("Radius : {0}".format(feature.attribute("Radius"))),
-                      ("Link : {0}".format(feature.attribute("Link")))]
+            report.append("\nLevel of Threat (LOT) : {0}".format(feature.attribute("LOT")))
+            report.append("Location : {0}".format(feature.attribute("Location")))
+            report.append("Address : {0}".format(feature.attribute("Address")))
+            report.append("Timestamp : {0}".format(feature.attribute("Timestamp")))
+            report.append("Attackers : {0}".format(feature.attribute("Attackers")))
+            report.append("Weapons : {0}".format(feature.attribute("Weapons")))
+            report.append("Casualties : {0}".format(feature.attribute("Casualties")))
+            report.append("Radius : {0}".format(feature.attribute("Radius")))
+            report.append("Link : {0}".format(feature.attribute("Link")))
             self.ReportInformation.clear()
             self.ReportInformation.addItems(report)
 
@@ -247,16 +250,18 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_A"), False)
             self.iface.legendInterface().setLayerVisible(self.layer_dic.get("info_B"), True)
 
+            global report
+            report = []
             feature = self.layer_dic.get("Incident_B").getFeatures().next()
-            report = [("\nLevel of Threat (LOT) : {0}".format(feature.attribute("LOT"))),
-                      ("Location : {0}".format(feature.attribute("Location"))),
-                      ("Address : {0}".format(feature.attribute("Adress"))),
-                      ("Timestamp : {0}".format(feature.attribute("Timestamp"))),
-                      ("Attackers : {0}".format(feature.attribute("Attackers"))),
-                      ("Weapons : {0}".format(feature.attribute("Weapons"))),
-                      ("Casualties : {0}".format(feature.attribute("Casualties"))),
-                      ("Radius : {0}".format(feature.attribute("Radius"))),
-                      ("Link : {0}".format(feature.attribute("Link")))]
+            report.append("\nLevel of Threat (LOT) : {0}".format(feature.attribute("LOT")))
+            report.append("Location : {0}".format(feature.attribute("Location")))
+            report.append("Address : {0}".format(feature.attribute("Adress")))
+            report.append("Timestamp : {0}".format(feature.attribute("Timestamp")))
+            report.append("Attackers : {0}".format(feature.attribute("Attackers")))
+            report.append("Weapons : {0}".format(feature.attribute("Weapons")))
+            report.append("Casualties : {0}".format(feature.attribute("Casualties")))
+            report.append("Radius : {0}".format(feature.attribute("Radius")))
+            report.append("Link : {0}".format(feature.attribute("Link")))
             self.ReportInformation.clear()
             self.ReportInformation.addItems(report)
 
@@ -594,17 +599,60 @@ class PRS_PoliceResponseSystemDockWidget(QtGui.QDockWidget, FORM_CLASS):
 
         #set police layer as working layer
 
+    def getvehicles(self):
+        cutoff_vehicles = self.vehicles.text()
+        if uf.isNumeric(cutoff_vehicles):
+            return uf.convertNumeric(cutoff_vehicles)
+        else:
+            return 0
+
+    def getofficers(self):
+        cutoff_officers = self.officers.text()
+        if uf.isNumeric(cutoff_officers):
+            return uf.convertNumeric(cutoff_officers)
+        else:
+            return 0
+    global ListDeploy
+    ListDeploy=[]
+
+
+    def DeployTeam(self):
+
+        vehicles = self.getvehicles()
+        officers = self.getofficers()
+        featurePol = self.getFeature()
+
+        namePol = featurePol.attribute("name")
+        text="PT {0}  Vehicles: {1} Officers: {2}\n".format(namePol,vehicles,officers)
+        ListDeploy.append(text)
+    def generatereport(self):
+        final=""
+        for i in range(len(ListDeploy)):
+            final=final+ListDeploy[i]
+        print final
+
+        print report
+
+        ReportText="Incident Report\n {0}\n {1}\n {2}\n {3}\n" \
+                   "{4}\n {5}\n {6}\n {7}\n {8} \n" \
+                   "Police Officers Involved\n\n\n\n" \
+                   "{9}".format(report[0],report[1],report[2],report[3],report[4],report[5],report[6],report[7],report[8],final)
+        print ReportText
+        self.ReportText.insertPlainText(ReportText)
+    def getFeature(self):
+        layer=self.iface.activeLayer()
+        features =layer.selectedFeatures()
+        feature = features[0]
+        return feature
+
     def ShowInformation(self):
 
-        Policelayer = uf.getLegendLayerByName(self.iface, "Police_stations_area")
-        selected_feature=Policelayer.selectedFeatures()#returns a list object with the feature objects
-        if(len(selected_feature)>0):
-            feature=selected_feature[0]#get the feature object
-            #tuple with the data (",",",")
-            PoliceData=(feature.attribute("name"),feature.attribute("n_vehicle"),feature.attribute("n_officer"),feature.attribute("equipment"))
-            self.clearTable()
-            self.updateTable(PoliceData)
+        feature = self.getFeature()
 
+        PoliceData = (feature.attribute("name"), feature.attribute("n_vehicle"), feature.attribute("n_officer"),
+                      feature.attribute("equipment"))
+        self.clearTable()
+        self.updateTable(PoliceData)
 
     def updateTable(self,values):
         #take a tuple with the values of one feature
