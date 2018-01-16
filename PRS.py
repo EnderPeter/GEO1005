@@ -194,6 +194,7 @@ class PRS_PoliceResponseSystem:
         self.dockwidget.danger_zones = []
         self.dockwidget.roadblock_table.clear()
         self.dockwidget.bufferCutoffEdit.clear()
+        self.dockwidget.ReportText.clear()
 
         # remove this statement if dockwidget is to remain
         # for reuse if plugin is reopened
